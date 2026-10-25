@@ -2,358 +2,692 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>880 名词解释学习卡</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>imr</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#F2F2F7">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="imr">
+<meta name="format-detection" content="telephone=no">
+
+<link rel="stylesheet" href="vendor/katex/katex.min.css">
+<script>
+(function(){
+  try{
+    var t=localStorage.getItem('rq_theme');
+    document.documentElement.setAttribute('data-theme', (t==='dark'||t==='auto') ? (t==='auto'?'light':'dark') : 'light');
+  }catch(e){}
+})();
+</script>
 <style>
+/* ============================================================
+   设计令牌 —— iOS 系统色板
+   ============================================================ */
+:root{
+  --ease-ios: cubic-bezier(.32,.72,0,1);
+  --ease-spring: cubic-bezier(.2,.9,.3,1.12);
+
+  --bg:#FFFFFF; --card:#FFFFFF; --card2:#FFFFFF;
+  --fill:rgba(0,0,0,.05); --fill2:rgba(0,0,0,.032);
+  --text:#0A0A0A; --text2:#3C3C43; --text3:#8E8E93; --text4:#C7C7CC;
+  --sep:rgba(0,0,0,.10); --sep2:rgba(0,0,0,.06);
+  --blue:#007AFF; --green:#34C759; --orange:#FF9500; --red:#FF3B30;
+  --purple:#AF52DE; --teal:#5AC8FA;
+
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
+  --tabh:52px; --r:12px; --r-lg:18px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111112; --card:#1A1A1C; --card2:#242427;
+    --fill:rgba(255,255,255,.09); --fill2:rgba(255,255,255,.055);
+    --text:#F5F5F7; --text2:#C9C9CE; --text3:#8A8A8F; --text4:#4A4A4E;
+    --sep:rgba(255,255,255,.13); --sep2:rgba(255,255,255,.075);
+    --blue:#0A84FF; --green:#30D158; --orange:#FF9F0A; --red:#FF453A;
+    --purple:#BF5AF2; --teal:#64D2FF;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111112; --card:#1A1A1C; --card2:#242427;
+  --fill:rgba(255,255,255,.09); --fill2:rgba(255,255,255,.055);
+  --text:#F5F5F7; --text2:#C9C9CE; --text3:#8A8A8F; --text4:#4A4A4E;
+  --sep:rgba(255,255,255,.13); --sep2:rgba(255,255,255,.075);
+  --blue:#0A84FF; --green:#30D158; --orange:#FF9F0A; --red:#FF453A;
+  --purple:#BF5AF2; --teal:#64D2FF;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+html,body{overscroll-behavior-y:none}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro SC","PingFang SC","Noto Sans SC",system-ui,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  font-size:17px;line-height:1.45;letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;padding-top:var(--sat);
+  transition:background-color .3s var(--ease-ios),color .3s var(--ease-ios);
+}
+
+/* ============ 导航栏（Large Title） ============ */
+header{
+  position:sticky;top:0;z-index:100;
+  background:var(--bg);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:.5px solid var(--sep);
+}
+@supports (backdrop-filter:blur(1px)){
+  header{background:color-mix(in srgb,var(--bg) 80%,transparent)}
+}
+.navbar{height:44px;display:flex;align-items:center;justify-content:center;position:relative;padding:0 20px}
+.navbar .title{font-size:16px;font-weight:500;letter-spacing:-.01em;color:var(--text2)}
+.navbar .right{position:absolute;right:20px;font-size:14px;color:var(--text3);font-variant-numeric:tabular-nums}
+.navbar .right b{color:var(--text);font-weight:600}
+.largeTitle{padding:8px 20px 20px;font-size:30px;font-weight:600;letter-spacing:-.035em;line-height:1.12}
+.largeTitle .sub{display:block;font-size:13px;font-weight:400;color:var(--text3);letter-spacing:0;margin-top:3px}
+
+/* ============ 主区 ============ */
+main{flex:1;padding:0 20px calc(var(--tabh) + var(--sab) + 28px);max-width:660px;margin:0 auto;width:100%}
+section{display:none}
+section.on{display:block;animation:pageIn .34s var(--ease-ios) both}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ============ 底部标签栏 ============ */
+nav.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--bg);
+  backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);
+  border-top:.5px solid var(--sep);display:grid;grid-template-columns:repeat(5,1fr);
+  padding-bottom:var(--sab);height:calc(var(--tabh) + var(--sab));
+}
+@supports (backdrop-filter:blur(1px)){
+  nav.tabbar{background:color-mix(in srgb,var(--bg) 78%,transparent)}
+}
+nav.tabbar button{
+  background:none;border:none;color:var(--text3);font-family:inherit;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:10px;font-weight:500;transition:color .2s var(--ease-ios);
+}
+nav.tabbar button svg{
+  width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease-spring);
+}
+nav.tabbar button.on{color:var(--text)}
+nav.tabbar button.on svg{transform:scale(1.06)}
+nav.tabbar button:active svg{transform:scale(.9)}
+
+/* ============ 通用 ============ */
+.group{background:transparent;border-radius:0;margin-bottom:28px;overflow:hidden}
+.group.lg{border-radius:var(--r-lg)}
+.groupTitle{font-size:12px;font-weight:500;color:var(--text3);padding:0 0 10px;letter-spacing:.04em}
+.groupFoot{font-size:13px;color:var(--text3);padding:8px 0 0;line-height:1.5}
+.row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.pad{padding:18px 0}
+.dim{color:var(--text2);font-size:15px;line-height:1.5}
+.dim2{color:var(--text3);font-size:13px;line-height:1.5}
+h2{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:12px}
+h3{font-size:15px;font-weight:600;margin-bottom:10px}
+
+button.btn{
+  background:var(--text);color:var(--bg);border:none;padding:14px 20px;border-radius:11px;
+  cursor:pointer;font-size:16px;font-weight:500;font-family:inherit;letter-spacing:-.01em;
+  transition:transform .2s var(--ease-spring),opacity .15s;
+}
+button.btn:active{transform:scale(.965);opacity:.88}
+button.btn.ghost{background:var(--fill2);color:var(--text2)}
+button.btn.plain{background:transparent;color:var(--text2);padding:8px 4px;font-size:15px;font-weight:400}
+button.btn.sm{padding:8px 15px;font-size:15px;border-radius:9px}
+button.btn.xs{padding:5px 12px;font-size:13px;border-radius:8px;font-weight:500}
+button.btn.danger{background:transparent;color:var(--red)}
+
+input,select,textarea{
+  background:transparent;border:.5px solid var(--sep);color:var(--text);padding:11px 13px;
+  border-radius:9px;font-size:16px;font-family:inherit;width:100%;outline:none;
+  transition:border-color .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--text3)}
+textarea{min-height:70px;resize:vertical;line-height:1.5}
+input[type=checkbox]{
+  -webkit-appearance:none;appearance:none;width:22px;height:22px;flex:0 0 auto;
+  border:1.5px solid var(--text4);border-radius:50%;background:transparent;
+  position:relative;cursor:pointer;transition:background .18s,border-color .18s;padding:0;margin:0;
+}
+input[type=checkbox]:checked{background:var(--green);border-color:var(--green)}
+input[type=checkbox]:checked::after{
+  content:"";position:absolute;left:7.5px;top:4px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);
+}
+input[type=color]{width:100%;height:44px;padding:4px;background:var(--fill2);border:none;border-radius:10px}
+label.sw{display:inline-flex;align-items:center;gap:8px;font-size:15px;color:var(--text2);cursor:pointer;user-select:none}
+
+/* ============ 首页 ============ */
+.hero{padding:28px 0 34px;margin-bottom:0;border:none;text-align:center}
+.hero .t{font-size:13px;font-weight:400;color:var(--text3);letter-spacing:.02em}
+.hero .n{font-size:56px;font-weight:600;letter-spacing:-.05em;line-height:1;margin:10px 0 2px}
+.hero .n small{font-size:17px;font-weight:500;color:var(--text3);margin-left:4px;letter-spacing:0}
+.hero .meta{font-size:13px;color:var(--text3);margin-top:10px;line-height:1.5}
+.hero .meta b{color:var(--text2);font-weight:600}
+.hero .go{margin-top:26px;width:100%}
+
+.deckRow{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  background:transparent;border:none;padding:19px 0;cursor:pointer;font-family:inherit;color:var(--text);
+  transition:background .18s var(--ease-ios),transform .2s var(--ease-spring);
+  border-bottom:.5px solid var(--sep2);animation:itemIn .42s var(--ease-ios) both;
+}
+.deckRow:last-child{border-bottom:none}
+.deckRow:active{opacity:.5;transform:none}
+@keyframes itemIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.deckRow .ic{width:26px;flex:0 0 auto;font-size:20px;line-height:1;text-align:center;opacity:.92}
+.deckRow .mid{flex:1;min-width:0}
+.deckRow .nm{font-size:17px;font-weight:500;letter-spacing:-.015em}
+.deckRow .sub{font-size:13px;color:var(--text3);margin-top:3px}
+.deckRow .chev{display:none}
+/* 速览型卡组（会议大观 / 转折点这类汇总）：点一下在下方展开全文，不做翻转卡 */
+.deckRow[data-read] .chev{display:block;color:var(--text3);font-size:15px;transition:transform .25s var(--ease-ios)}
+.deckRow[data-read].open .chev{transform:rotate(180deg)}
+.readBody{padding:2px 16px 18px;font-size:14.5px;line-height:1.8;color:var(--text2);border-bottom:.5px solid var(--sep2)}
+.readBody b{color:var(--text);font-weight:600}
+/* 速览条目里的二级标题（点哪个展开哪个） */
+.secItem{border-bottom:.5px solid var(--sep2)}
+.secItem:last-child{border-bottom:none}
+.secHead{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;text-align:left;background:transparent;border:none;padding:13px 0;
+  font-family:inherit;font-size:15px;font-weight:600;color:var(--text);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.secHead:active{opacity:.55}
+.secHead .chev2{color:var(--text3);font-size:14px;flex:0 0 auto;transition:transform .25s var(--ease-ios)}
+.secHead.open .chev2{transform:rotate(180deg)}
+.secBody{padding:0 0 15px;font-size:14px;line-height:1.8;color:var(--text2)}
+.secBody b{color:var(--text);font-weight:600}
+.deckRow .bar{display:none}
+.deckRow .cnt{color:var(--text3);font-size:15px;flex:0 0 auto;font-variant-numeric:tabular-nums}
+.deckRow .bar i{display:block;height:100%;border-radius:2px;transition:width .5s var(--ease-ios)}
+
+/* ============ 学习页 ============ */
+.studyTop{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.studyTop .nm{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.studyTop .pg{font-size:13px;color:var(--text3);margin-top:1px}
+.progress{height:3px;background:var(--fill);border-radius:2px;overflow:hidden;margin-bottom:12px}
+.progress i{display:block;height:100%;background:var(--text);border-radius:2px;transition:width .45s var(--ease-ios)}
+
+#cardTag{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:13px;margin-bottom:10px;min-height:22px}
+#cardTag .deckname{color:var(--text2);font-weight:500;background:var(--fill);border-radius:5px;padding:2px 8px;font-size:12px}
+#cardTag .prog{color:var(--text3);font-size:13px}
+#cardTag .tg{color:var(--text3);background:transparent;border:.5px solid var(--sep);border-radius:20px;padding:1px 9px;font-size:12px}
+
+#cardWrap{perspective:1400px;position:relative;margin-bottom:12px}
+#cardInner{
+  position:relative;width:100%;height:56vh;
+  transform-style:preserve-3d;transition:transform .55s var(--ease-ios);
+}
+#cardWrap.flip #cardInner{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;border-radius:16px;background:var(--card);
+  border:.5px solid var(--sep);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;padding:22px 20px;overflow:hidden;
+}
+#cardFront{display:flex;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#cardFront .fc{
+  margin:auto;text-align:center;font-size:21px;font-weight:600;
+  line-height:1.42;letter-spacing:-.02em;word-break:break-word;padding:4px 0;
+}
+#cardFront .fc.long{font-size:15.5px;font-weight:400;line-height:1.75;text-align:left;letter-spacing:0}
+#cardFront .fc.long .cloze{font-weight:500}
+#cardBack{transform:rotateY(180deg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#cardHint{text-align:center;font-size:12px;color:var(--text3);padding-bottom:4px;transition:opacity .2s}
+
+/* ---------- 选择题卡 ---------- */
+#cardFront.quiz{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.quizWrap{margin:auto 0;width:100%;text-align:left}
+.qmeta{font-size:12px;color:var(--text3);margin-bottom:9px;letter-spacing:.02em}
+.qstem{font-size:15.5px;line-height:1.7;color:var(--text);margin-bottom:16px}
+.opt{
+  display:flex;gap:10px;width:100%;text-align:left;background:transparent;
+  border:.5px solid var(--sep);border-radius:11px;padding:12px 14px;
+  font-family:inherit;font-size:14.5px;line-height:1.55;color:var(--text);
+  cursor:pointer;margin-bottom:9px;
+  transition:border-color .18s var(--ease-ios),background .18s var(--ease-ios),transform .18s var(--ease-spring);
+}
+.opt:active{transform:scale(.985)}
+.opt .k{font-weight:600;color:var(--text3);flex:0 0 auto;min-width:14px}
+.opt.picked{border-color:var(--text);background:var(--fill2)}
+.opt.right{border-color:var(--green);background:color-mix(in srgb,var(--green) 11%,transparent)}
+.opt.right .k{color:var(--green)}
+.opt.wrong{border-color:var(--red);background:color-mix(in srgb,var(--red) 11%,transparent)}
+.opt.wrong .k{color:var(--red)}
+.opt.missed{border-color:var(--green);border-style:dashed}
+.opt.missed .k{color:var(--green)}
+.opt[disabled]{cursor:default}
+/* 「提交答案」/「下一题」吸附在卡片底部：解析或选项再多也不会把它们挤出可视区
+   （之前长解析会把「下一题」推到卡片外被裁掉，用户选完就卡住点不动） */
+.qsubmit{
+  position:sticky;bottom:0;z-index:8;width:100%;margin-top:14px;
+  box-shadow:0 -14px 16px 8px var(--card);
+}
+.qexp{
+  margin-top:16px;padding:14px;border-radius:12px;background:var(--fill2);
+  font-size:13.5px;line-height:1.72;color:var(--text2);text-align:left;
+  margin-bottom:16px;
+}
+.qexp .verdict{font-size:15px;font-weight:600;margin-bottom:8px}
+.qexp .verdict.ok{color:var(--green)}
+.qexp .verdict.no{color:var(--red)}
+.qexp .dis{margin-top:10px;padding-top:10px;border-top:.5px solid var(--sep);color:var(--text3)}
+
+/* ---------- 资料（PDF 阅读） ---------- */
+.docRow{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:transparent;
+  border:none;padding:17px 0;cursor:pointer;font-family:inherit;color:var(--text);
+  border-bottom:.5px solid var(--sep2);transition:opacity .18s;
+}
+.docRow:last-child{border-bottom:none}
+.docRow:active{opacity:.5}
+.docRow .thumb{
+  width:42px;height:54px;border-radius:6px;flex:0 0 auto;object-fit:cover;
+  border:.5px solid var(--sep);background:var(--fill2);
+}
+.docRow .nm{font-size:16px;font-weight:500}
+.docRow .sub{font-size:13px;color:var(--text3);margin-top:3px}
+#cardWrap.flip ~ #cardHint{opacity:0}
+
+.qhead{font-size:13px;line-height:1.55;color:var(--text3);border-left:2.5px solid var(--blue);padding:1px 0 1px 10px;margin-bottom:12px}
+.qhead .qtype{display:inline-block;font-size:11px;font-weight:500;color:var(--text3);background:var(--fill);border-radius:5px;padding:1px 7px;margin-right:6px;vertical-align:1.5px}
+.qbody{font-size:15px;line-height:1.68;color:var(--text2)}
+.qbody b{color:var(--text);font-weight:600}
+.qbody.skel{color:var(--text3);line-height:1.78}
+.revealBtn{display:block;width:100%;margin-top:16px;background:var(--fill2);border:none;color:var(--blue);font-size:15px;font-weight:500;padding:12px;border-radius:10px;font-family:inherit;cursor:pointer;transition:background .18s,transform .2s var(--ease-spring)}
+.revealBtn:active{background:var(--fill);transform:scale(.98)}
+
+.grade{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.grade button{
+  border:.5px solid var(--sep);border-radius:12px;padding:15px 6px;cursor:pointer;
+  font-size:15px;font-weight:500;font-family:inherit;background:transparent;
+  transition:transform .2s var(--ease-spring),opacity .15s;
+}
+.grade button:active{transform:scale(.94);opacity:.85}
+.g-bad{color:var(--red);border-color:color-mix(in srgb,var(--red) 38%,transparent)}
+.g-warn{color:var(--orange);border-color:color-mix(in srgb,var(--orange) 38%,transparent)}
+.g-ok{color:var(--green);border-color:color-mix(in srgb,var(--green) 38%,transparent)}
+.grade button small{display:block;font-size:11.5px;font-weight:400;opacity:.75;margin-top:3px}
+
+#cardWrap.out-left{animation:outL .26s var(--ease-ios) forwards}
+#cardWrap.out-right{animation:outR .26s var(--ease-ios) forwards}
+#cardWrap.out-up{animation:outU .26s var(--ease-ios) forwards}
+@keyframes outL{to{opacity:0;transform:translateX(-28%) rotate(-4deg)}}
+@keyframes outR{to{opacity:0;transform:translateX(28%) rotate(4deg)}}
+@keyframes outU{to{opacity:0;transform:translateY(-14%) scale(.94)}}
+#cardWrap.in{animation:inCard .42s var(--ease-spring) both}
+@keyframes inCard{from{opacity:0;transform:scale(.94) translateY(12px)}to{opacity:1;transform:none}}
+
+/* ============ 统计 ============ */
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{padding:16px 4px;text-align:center}
+.stat b{display:block;font-size:26px;font-weight:600;letter-spacing:-.04em;color:var(--text)}
+.stat span{font-size:11px;color:var(--text3);display:block;margin-top:2px}
+.heat{display:grid;grid-template-columns:repeat(auto-fill,15px);gap:4px}
+.heat i{width:15px;height:15px;border-radius:4px;background:var(--fill);display:block}
+.heat i.l1{background:color-mix(in srgb,var(--blue) 32%,transparent)}
+.heat i.l2{background:color-mix(in srgb,var(--blue) 62%,transparent)}
+.heat i.l3{background:var(--blue)}
+
+/* ============ chips ============ */
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px;max-height:78px;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  padding:6px 13px;border-radius:20px;border:none;background:var(--fill2);color:var(--text2);
+  font-size:13px;cursor:pointer;font-family:inherit;white-space:nowrap;
+  transition:background .18s var(--ease-ios),color .18s,transform .2s var(--ease-spring);
+}
+.chip:active{transform:scale(.94)}
+.chip.on{background:var(--text);color:var(--bg)}
+
+/* ============ 表格 / 列表行 ============ */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px 8px;text-align:left;border-bottom:.5px solid var(--sep2)}
+th{color:var(--text3);font-weight:600;font-size:12px}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.listRow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;border-bottom:.5px solid var(--sep2);font-size:15px}
+.listRow:last-child{border-bottom:none}
+.group.boxed{border-top:.5px solid var(--sep);border-bottom:.5px solid var(--sep)}
+
+/* ============ Toast / 弹窗 ============ */
+.toast{
+  position:fixed;top:calc(var(--sat) + 12px);left:50%;
+  transform:translateX(-50%) translateY(-140%);
+  background:var(--text);color:var(--bg);padding:11px 20px;border-radius:22px;
+  font-size:15px;font-weight:500;opacity:0;z-index:999;pointer-events:none;
+  max-width:86vw;text-align:center;border:.5px solid var(--sep);
+  transition:transform .42s var(--ease-spring),opacity .3s;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .3s var(--ease-ios)}
+.mask.on{display:flex;opacity:1}
+.modal{
+  background:var(--card);border-top:.5px solid var(--sep);border-radius:20px 20px 0 0;width:100%;max-width:640px;max-height:88vh;
+  overflow-y:auto;padding:10px 20px calc(20px + var(--sab));
+  transform:translateY(100%);transition:transform .42s var(--ease-ios);
+}
+.mask.on .modal{transform:translateY(0)}
+.grabber{width:36px;height:5px;border-radius:3px;background:var(--text4);margin:0 auto 14px}
+.modal h3{margin-bottom:14px;font-size:19px;font-weight:700;letter-spacing:-.02em}
+.field{margin-bottom:14px}
+.field>label{display:block;font-size:13px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.hint{font-size:12px;color:var(--text3);margin-top:6px;line-height:1.5}
+.hint code{background:var(--fill2);padding:1px 5px;border-radius:4px;font-size:11.5px}
+
+.empty{text-align:center;color:var(--text3);padding:56px 20px;font-size:15px}
+.katex{font-size:1.02em}
+.cloze{
+  background:var(--fill);border-radius:6px;padding:1px 8px;cursor:pointer;
+  transition:background .2s var(--ease-ios),color .2s;
+  -webkit-tap-highlight-color:transparent;
+}
+.cloze.hidden{color:transparent}
+/* 点开后的答案标红：原文标红的就是重点（超武 14:19 要求「你也标红」） */
+.cloze:not(.hidden){background:color-mix(in srgb,var(--red) 9%,transparent);color:var(--red);font-weight:600}
+.cloze:active{background:var(--fill)}
+/* ==重点== → 红色高亮（一页纸卡片最上面的红色主题） */
+.hl{color:var(--red);font-weight:600}
 
 
-:root{--bg:#f0f2f5;--card-bg:#fff;--text:#1a1a2e;--accent:#1a5276;--accent-light:#2980b9;--danger:#c0392b;--success:#27ae60;--border:#e0e0e0;--shadow:0 4px 20px rgba(0,0,0,.08);--radius:16px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Noto Serif SC","PingFang SC",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
-header{background:var(--accent);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.15)}
-header h1{font-size:1.2rem;font-weight:700}
-header .stats{font-size:.85rem;opacity:.9}
-.filter-bar{display:flex;flex-wrap:wrap;gap:8px;padding:12px 24px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:60px;z-index:99}
-.chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:.82rem;transition:all .2s;user-select:none}
-.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:24px;gap:20px;max-width:700px;margin:0 auto;width:100%}
-.card-container{perspective:1000px;width:100%;max-width:560px}
-.card{width:100%;min-height:280px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1);cursor:pointer}
-.card.flipped{transform:rotateY(180deg)}
-.card-face{position:absolute;top:0;left:0;width:100%;min-height:280px;backface-visibility:hidden;border-radius:var(--radius);padding:28px 24px;display:flex;flex-direction:column;box-shadow:var(--shadow)}
-.card-front{background:var(--card-bg);justify-content:center;align-items:center;border:2px solid var(--border)}
-.card-front .chapter-tag{position:absolute;top:16px;left:16px;font-size:.75rem;color:var(--accent-light);font-weight:600}
-.card-front .term{font-size:1.8rem;font-weight:700;text-align:center;line-height:1.4}
-.card-front .hint{position:absolute;bottom:14px;font-size:.75rem;color:#aaa}
-.card-back{background:#fafbfc;transform:rotateY(180deg);border:2px solid var(--accent-light);overflow-y:auto}
-.card-back .def-text{font-size:.92rem;line-height:1.7;color:#333;flex:1;white-space:pre-wrap}
-.btn-row{display:flex;gap:12px;width:100%;max-width:560px;justify-content:center}
-.btn{padding:12px 28px;border-radius:12px;border:none;cursor:pointer;font-size:.95rem;font-weight:600;transition:all .2s}
-.btn-forgot{background:#fdecea;color:var(--danger)}
-.btn-remember{background:#eafaf1;color:var(--success)}
-.btn-next{background:var(--accent);color:#fff}
-.stats-panel{width:100%;max-width:560px;background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-.stats-panel h3{font-size:1rem;margin-bottom:12px;color:var(--accent)}
-.forgot-list{max-height:300px;overflow-y:auto}
-.forgot-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:.85rem}
-.forgot-item .count{background:#fdecea;color:var(--danger);padding:2px 8px;border-radius:10px;font-size:.75rem;font-weight:600}
-.add-form{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.add-form input,.add-form select,.add-form textarea{padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:.85rem;font-family:inherit}
-.add-form textarea{min-height:60px;resize:vertical}
-.add-form button{padding:8px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer}
-.progress{width:100%;max-width:560px}
-.progress-bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;background:var(--accent-light);border-radius:3px;transition:width .3s}
-.progress-text{font-size:.78rem;color:#666;margin-top:4px}
-.tab-row{display:flex;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.tab-btn{padding:8px 20px;background:#fff;border:none;cursor:pointer;font-size:.82rem;font-weight:600;flex:1}
-.tab-btn.active{background:var(--accent);color:#fff}
-@media(max-width:600px){header h1{font-size:1rem}.card-front .term{font-size:1.3rem}.card{min-height:220px}.card-face{min-height:220px;padding:20px 16px}.btn{padding:10px 18px;font-size:.85rem}}
+/* 学习页：标题压缩，把纵向空间让给卡片 */
+body[data-tab="study"] .largeTitle{font-size:20px;padding:0 16px 8px;font-weight:600}
+body[data-tab="study"] .largeTitle .sub{display:none}
+body[data-tab="study"] .studyTop .nm{display:none}
+body[data-tab="study"] .studyTop{margin-bottom:6px}
+body[data-tab="study"] main{padding-top:2px}
 
-
+@media(min-width:640px){.mask{align-items:center}.modal{border-radius:20px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
-<b<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="880名词卡">
-<meta name="theme-color" content="#1a5276">
-ody>
+<body>
+
 <header>
-  <h1>📚 880 材科基 · 名词解释学习卡</h1>
-  <div class="stats" id="headerStats">加载中...</div>
+  <div class="navbar">
+    <span class="title">imr</span>
+    <span class="right" id="hStat">今日 <b>0</b> 张</span>
+  </div>
+  <div class="largeTitle" id="bigTitle">卡组<span class="sub" id="bigSub">—</span></div>
 </header>
-<div class="filter-bar" id="filterBar"></div>
+
 <main>
-  <div class="card-container"><div class="card" id="card" onclick="flipCard()">
-    <div class="card-face card-front"><span class="chapter-tag" id="chapterTag"></span><div class="term" id="termDisplay"></div><span class="hint">👆 点击翻转查看答案</span></div>
-    <div class="card-face card-back"><div class="def-text" id="defDisplay"></div></div>
-  </div></div>
-  <div class="progress" id="progressArea"></div>
-  <div class="btn-row">
-    <button class="btn btn-forgot" onclick="markForgot()">😰 没记住</button>
-    <button class="btn btn-next" onclick="nextCard()">➡️ 下一个</button>
-    <button class="btn btn-remember" onclick="markRemember()">✅ 记住了</button>
-  </div>
-  <div class="stats-panel">
-    <div class="tab-row">
-      <button class="tab-btn active" onclick="switchTab('forgot')" id="tabForgot">📋 没记住清单</button>
-      <button class="tab-btn" onclick="switchTab('add')" id="tabAdd">➕ 添加</button>
-      <button class="tab-btn" onclick="switchTab('export')" id="tabExport">📤 导出</button>
+  <!-- ============ 首页 ============ -->
+  <section id="tab-home" class="on">
+    <div class="hero">
+      <div class="t">今日已背</div>
+      <div class="n" id="homeToday">0<small>张</small></div>
+      <div class="meta" id="homeMeta">—</div>
+      <button class="btn go" id="btnQuick">开始今日复习</button>
     </div>
-    <div id="tabContent"></div>
-  </div>
+    <div class="groupTitle">选择要背的内容</div>
+    <div class="group lg" id="bigDecks"></div>
+    <div id="otherWrap" style="display:none">
+      <div class="groupTitle">其他卡组</div>
+      <div class="group" id="deckList"></div>
+    </div>
+  </section>
+
+  <!-- ============ 学习 ============ -->
+  <section id="tab-study">
+    <div class="studyTop">
+      <div style="flex:1;min-width:0">
+        <div class="nm" id="studyDeckName">—</div>
+        <div class="pg" id="studyProgress">—</div>
+      </div>
+      <button class="btn plain" id="btnFilters">筛选</button>
+      <button class="btn plain" id="btnExitStudy">退出</button>
+    </div>
+    <div class="progress"><i id="studyBar" style="width:0%"></i></div>
+
+    <div id="studyFilters" style="display:none">
+      <div class="row" style="margin-bottom:10px">
+        <select id="studyDeck" style="flex:1;min-width:130px"></select>
+        <select id="studyRange" style="flex:1;min-width:110px">
+          <option value="due">今日到期</option>
+          <option value="all">全部卡片</option>
+          <option value="wrong">只刷错题</option>
+          <option value="unmastered">只刷未掌握</option>
+        </select>
+      </div>
+      <div class="chips" id="studyTags"></div>
+    </div>
+    <div class="row" style="margin-bottom:12px">
+      <label class="sw"><input type="checkbox" id="optShuffle"> 乱序</label>
+      <label class="sw"><input type="checkbox" id="optReverse"> 反向</label>
+      <label class="sw"><input type="checkbox" id="optSkeleton"> 骨架</label>
+      <label class="sw"><input type="checkbox" id="optSpeak"> 朗读</label>
+      <button class="btn xs plain" id="btnRestart" style="margin-left:auto">重新开始</button>
+    </div>
+
+    <div id="cardTag"></div>
+    <div id="cardWrap">
+      <div id="cardInner">
+        <div class="face" id="cardFront"><div class="fc" id="cardFrontInner">点这里开始</div></div>
+        <div class="face" id="cardBack"></div>
+      </div>
+    </div>
+    <div id="cardHint">点卡片翻转 · 1/2/3 评分</div>
+
+    <div class="grade" id="gradeRow" style="display:none;margin-top:14px">
+      <button class="g-bad" data-g="0">不认识<small>重新学</small></button>
+      <button class="g-warn" data-g="1">模糊<small>短期再练</small></button>
+      <button class="g-ok" data-g="2">认识<small>拉长间隔</small></button>
+    </div>
+  </section>
+
+  <!-- ============ 统计 ============ -->
+  <section id="tab-stats">
+    <div class="grid4">
+      <div class="stat"><b id="stToday">0</b><span>今日已学</span></div>
+      <div class="stat"><b id="stStreak">0</b><span>连续打卡</span></div>
+      <div class="stat"><b id="stMastered">0</b><span>已掌握</span></div>
+      <div class="stat"><b id="stDue">0</b><span>待复习</span></div>
+    </div>
+    <div class="groupTitle">遗忘曲线</div>
+    <div class="group"><div class="pad">
+      <div class="dim2" style="margin-bottom:8px">记忆保持率随时间衰减，掉到目标线就该复习</div>
+      <div id="curveBox"></div>
+    </div></div>
+    <div class="groupTitle">未来 7 天到期量</div>
+    <div class="group"><div class="pad" id="forecast"></div></div>
+    <div class="groupTitle">近 30 天</div>
+    <div class="group"><div class="pad">
+      <div class="heat" id="heat"></div>
+      <div class="dim2" style="margin-top:10px" id="heatTip">—</div>
+    </div></div>
+    <div class="groupTitle">各卡组进度</div>
+    <div class="group"><div class="pad" id="deckStats"></div></div>
+    <div class="groupTitle">错得最多（前 20）</div>
+    <div class="group"><div class="pad" id="worstList"></div></div>
+  </section>
+
+  <!-- ============ 资料 ============ -->
+  <section id="tab-docs">
+    <div class="groupTitle">阅读材料</div>
+    <div class="group" id="docList"></div>
+    <div class="groupFoot">在 App 里点开就是原生 PDF 阅读器，可缩放、可翻页。网页版会另开标签页。</div>
+
+    <div class="groupTitle">导入自己的资料</div>
+    <div class="group"><div class="pad">
+      <div class="dim2" style="margin-bottom:10px">
+        把 PDF / 图片放进 App 的 <code>rqRecite/www/资料/</code> 目录，重新编译就会出现在上面。
+      </div>
+      <div class="dim2">当前只读，不支持在 App 内编辑。</div>
+    </div></div>
+  </section>
+
+  <!-- ============ 管理 ============ -->
+  <section id="tab-manage">
+    <div class="groupTitle">导入</div>
+    <div class="group"><div class="pad">
+      <div class="dim2" style="margin-bottom:10px">
+        自动识别：<b>Markji 表格</b>（正面 TAB/逗号 背面）、<b>Markji 编辑器语法</b>（<code>#标签</code> + 空行分隔）、<b>本站 JSON</b>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <select id="impDeck" style="flex:1;min-width:130px"></select>
+        <button class="btn sm ghost" id="btnImpFile">选文件</button>
+      </div>
+      <input type="file" id="impFile" accept=".csv,.json,.txt,.tsv" style="display:none">
+      <textarea id="impText" style="min-height:120px" placeholder="空间点阵&#9;将晶体中原子或原子群抽象为几何点…&#10;&#10;或：&#10;正面一行&#10;背面一行&#10;&#10;#标签&#10;下一张正面&#10;下一张背面"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn sm" id="btnImpText">粘贴导入</button>
+        <label class="sw"><input type="checkbox" id="impAppend" checked> 追加</label>
+      </div>
+    </div></div>
+
+    <div class="groupTitle">记忆引擎 · FSRS</div>
+    <div class="group"><div class="pad">
+      <div class="dim2" style="margin-bottom:12px">
+        按 DSR 模型给每张卡单独算下次复习时间：<b>难度 D</b> × <b>稳定性 S</b> × <b>可提取性 R</b>
+      </div>
+      <div class="field">
+        <label>目标保留率（越高复习越密）</label>
+        <select id="setRet">
+          <option value="0.80">80% · 省时间</option>
+          <option value="0.85">85%</option>
+          <option value="0.90">90% · 推荐</option>
+          <option value="0.92">92% · 考研推荐（默认）</option>
+          <option value="0.95">95% · 最牢但最累</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>最大间隔（天）</label>
+        <input type="number" id="setMaxI" min="1" max="365" value="21">
+      </div>
+      <div class="dim2" style="margin-bottom:5px">一张新卡「每次都答认识」的复习节奏：</div>
+      <div id="ladderBox" style="font-size:14px;color:var(--blue);font-weight:500;line-height:1.7"></div>
+      <div class="dim2" style="margin-top:8px" id="examCap">—</div>
+    </div></div>
+
+    <div class="groupTitle">每日上限</div>
+    <div class="group">
+      <div class="listRow"><span>每日新卡上限</span><input type="number" id="setNew" min="0" max="999" value="60" style="width:88px;text-align:right"></div>
+      <div class="listRow"><span>每日复习上限</span><input type="number" id="setRev" min="0" max="9999" value="400" style="width:88px;text-align:right"></div>
+      <div class="listRow"><span>「已掌握」间隔（天）</span><input type="number" id="setMature" min="1" max="365" value="21" style="width:88px;text-align:right"></div>
+    </div>
+
+    <div class="groupTitle">外观</div>
+    <div class="group">
+      <div class="listRow"><span>主题</span>
+        <select id="setTheme" style="width:132px;text-align:right">
+          <option value="auto">跟随系统</option>
+          <option value="light">浅色</option>
+          <option value="dark">深色</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="groupTitle">卡组与卡片</div>
+    <div class="group"><div class="pad">
+      <div class="row" style="margin-bottom:10px">
+        <select id="mngDeck" style="flex:1;min-width:130px"></select>
+        <button class="btn sm ghost" id="btnAddCard">+ 加卡</button>
+      </div>
+      <div class="row" style="margin-bottom:12px">
+        <input id="cardSearch" placeholder="搜索正面 / 背面 / 标签…">
+      </div>
+      <div id="cardList"></div>
+    </div></div>
+
+    <div class="groupTitle">卡组管理</div>
+    <div class="group">
+      <div class="listRow"><span>新建卡组</span><button class="btn xs ghost" id="btnNewDeck">新建</button></div>
+      <div class="listRow"><span>重命名当前卡组</span><button class="btn xs ghost" id="btnEditDeck">重命名</button></div>
+      <div class="listRow"><span style="color:var(--red)">删除当前卡组</span><button class="btn xs danger" id="btnDelDeck">删除</button></div>
+    </div>
+
+    <div class="groupTitle">导出</div>
+    <div class="group">
+      <div class="listRow"><span>JSON（含学习进度）</span><button class="btn xs ghost" id="btnExpJson">导出</button></div>
+      <div class="listRow"><span>CSV</span><button class="btn xs ghost" id="btnExpCsv">导出</button></div>
+      <div class="listRow"><span>Markji 文本</span><button class="btn xs ghost" id="btnExpMarkji">导出</button></div>
+    </div>
+    <div class="groupFoot">数据只存本机，不上传服务器。换设备用 JSON 导入导出搬。</div>
+
+    <div class="groupTitle">危险操作</div>
+    <div class="group">
+      <div class="listRow"><span style="color:var(--orange)">重置学习进度</span><button class="btn xs ghost" id="btnResetProgress" style="color:var(--orange)">重置</button></div>
+      <div class="listRow"><span style="color:var(--red)">清空所有数据</span><button class="btn xs danger" id="btnWipe">清空</button></div>
+    </div>
+
+    <div class="groupTitle">关于</div>
+    <div class="group"><div class="pad"><div class="dim2" id="aboutBox">—</div></div></div>
+  </section>
 </main>
-<script>
 
-const TERMS_DATA = JSON.parse("[{\"chapter\": \"第一章 晶体结构\", \"term\": \"空间点阵\", \"def\": \"将晶体中原子或原子群抽象为几何点在三维空间作周期性规则排列所形成的空间阵列。空间点阵共有14种类型(14种布拉菲点阵),分为七大晶系。每个阵点代表一个或一组原子的等效位置,是描述晶体结构周期性的基本几何模型。空间点阵与晶体结构的区别在于:前者是抽象几何模型,后者是原子在空间的实际排列方式。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"晶体结构\", \"def\": \"晶体中原子(离子或分子)在三维空间的具体排列方式。晶体结构 = 空间点阵 + 基元(每个阵点所代表的原子群)。描述晶体结构的基本参数包括晶格常数(a、b、c)和晶轴夹角(α、β、γ)。典型的金属晶体结构有面心立方(FCC)、体心立方(BCC)和密排六方(HCP)三种。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"晶胞\", \"def\": \"空间点阵中最小的平行六面体重复单元,能充分反映点阵的对称性特征。晶胞的大小和形状由六个参数描述:三个棱边长度a、b、c(晶格常数)和三个棱边间夹角α、β、γ。晶胞在三维空间重复堆砌即可构成整个晶体。晶胞有素晶胞(仅含一个阵点)和复晶胞(含多个阵点)之分。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"配位数\", \"def\": \"晶体中任一原子周围最近邻且等距离的原子数目。配位数是描述晶体结构紧密程度的重要参数。FCC的配位数为12,BCC为8(8个最近邻+6个次近邻,通常取最近邻),HCP为12(c/a=1.633时)。配位数越大,原子排列越紧密,致密度越高。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"致密度\", \"def\": \"晶体中原子(视为刚性球)所占体积与晶胞总体积之比。致密度 = 晶胞内原子总体积 / 晶胞体积。FCC致密度为0.74,BCC为0.68,HCP为0.74(c/a=1.633时)。致密度反映了晶体中原子排列的紧密程度,影响材料的密度、扩散速率和力学性能。BCC中存在较大的八面体间隙,虽然致密度低于FCC,但为小原子(C、N)的扩散提供了通道。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"金属键\", \"def\": \"金属原子间的一种化学结合键。金属原子失去外层价电子形成正离子,这些价电子为全体原子所共有形成\\\"电子气\\\",正离子与电子气之间的静电引力即为金属键。金属键无方向性和饱和性,使金属具有良好的导电性、导热性和塑性变形能力。金属键的强度(结合能)决定金属的熔点、弹性模量和热膨胀系数等性能。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"固溶体\", \"def\": \"溶质原子溶入溶剂金属晶格中形成的单相均匀晶体,保持溶剂晶体结构类型。按溶质原子在晶格中的位置分为置换固溶体(溶质原子占据溶剂点阵位置)和间隙固溶体(溶质原子位于晶格间隙位置)。固溶体的性能通常介于组元之间,固溶强化是重要的强化手段。影响溶解度的因素由Hume-Rothery规则描述。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"置换固溶体\", \"def\": \"溶质原子替代溶剂原子占据晶格结点位置而形成的固溶体。形成条件由Hume-Rothery规则决定:(1)原子尺寸差Δr<15%;(2)电负性差小;(3)电子浓度不超过极限值(一价FCC约1.36);(4)晶体结构相同。满足上述条件可形成无限固溶体(如Cu-Ni),否则溶解度有限。置换固溶体的晶格常数因溶质原子尺寸不同而发生变化。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"间隙固溶体\", \"def\": \"小尺寸溶质原子(如C、N、H、B等)溶入溶剂金属晶格的四面体或八面体间隙位置形成的固溶体,保持溶剂晶体结构类型。间隙固溶体的溶解度有限,因为晶格间隙位置数量和尺寸有限。典型例子如C溶入γ-Fe中形成奥氏体(FCC八面体间隙),最大溶解度为2.11%。间隙固溶体的性能特点是显著提高强度和硬度(间隙固溶强化效果远大于置换固溶强化)。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"缺位固溶体\", \"def\": \"在某些化合物(如金属间化合物)中,当其中一种组元的原子从正常点阵位置缺失而形成空位时,这种组成偏离化学计量比的相称为缺位固溶体。例如NiAl化合物中,当Al含量超过50%时,部分Ni位置出现空位以维持晶体结构稳定。缺位固溶体具有特殊的扩散和力学性能。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"电子化合物\", \"def\": \"由电子浓度(价电子数/原子数)决定晶体结构类型的一类中间相。当电子浓度为3/2(21/14)时形成β相(BCC结构);电子浓度为21/13时形成γ相(复杂立方);电子浓度为7/4(21/12)时形成ε相(HCP结构)。典型例子有Cu-Zn系中的β黄铜(CuZn)、γ黄铜(Cu5Zn8)和ε黄铜(CuZn3)。电子化合物的成分可在一定范围内变化,具有金属性。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"间隙相(间隙化合物)\", \"def\": \"过渡族金属元素与C、N、B、H等原子半径较小的非金属元素形成的化合物。当非金属原子半径与金属原子半径之比rx/rm<0.59时形成简单晶体结构的间隙相(如TiC、VC、NbC等,NaCl型结构),具有高熔点、高硬度的特点;当rx/rm>0.59时形成复杂晶体结构的间隙化合物(如Fe3C渗碳体,正交晶系)。间隙相/化合物与间隙固溶体的本质区别在于是否形成不同于溶剂的新晶体结构。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"超结构(有序固溶体)\", \"def\": \"某些在高温下原子呈无序排列的固溶体,当温度降低到某一临界温度以下时,不同种类原子在点阵中呈现则的周期性排列,这种有序化的固溶体称为超结构或有序固溶体。典型例子有Cu3Au(Cu原子占据面心位置、Au原子占据角位置)和CuZn(β黄铜,BCC→CsCl型)。有序化使合金电阻率降低、硬度增高、塑性下降。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"拓扑密堆相\", \"def\": \"由两种大小不同的原子通过适当配合,利用空间充填原理形成的具有极高致密度的中间相。原子排列仅由拓扑学因素(原子尺寸比)决定,配位数可高达14~16。典型例子有Laves相(如MgCu2、MgZn2)、σ相(如FeCr)和Frank-Kasper相。拓扑密堆相通常硬而脆,在高温合金中作为强化相存在,但也可能成为导致脆化的有害相(如不锈钢中的σ相)。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"肖脱基空位\", \"def\": \"晶体内部原子从正常点阵位置迁移至晶体表面,在内部留下空位,这种空位称为肖脱基空位。肖脱基空位的形成不产生间隙原子,空位与表面新增原子配对。在离子晶体中,为保持电中性,正负离子空位成对出现。平衡空位浓度随温度升高呈指数增大:nv/n = A·exp(-Qf/kT),其中Qf为空位形成能。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"弗仑克尔空位\", \"def\": \"晶体内部原子脱离正常点阵位置跃迁至晶格间隙中,同时形成一个空位和一个间隙原子,这种空位-间隙原子对称为弗仑克尔缺陷。弗仑克尔缺陷的形成不改变晶体体积(原子总数不变),但造成局部晶格畸变。在金属中弗仑克尔缺陷形成能高于肖脱基缺陷,因此金属中以肖脱基空位为主。在离子晶体和共价晶体中弗仑克尔缺陷较为常见。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"位错密度\", \"def\": \"单位体积晶体中所含位错线的总长度,或穿过单位面积截面的位错线根数,单位为cm-2。退火态金属位错密度约为106~108 cm-2,强冷变形金属可达1011~1012 cm-2。位错密度是表征晶体中位错数量多少的物理量,与材料的力学性能密切相关--位错密度越高,强度越高(加工硬化),但塑性降低。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"刃型位错\", \"def\": \"晶体中多余半原子面(刃口)终止在晶体内部形成的线缺陷。刃型位错的柏氏矢量b垂直于位错线方向。刃型位错有正负之分:正刃型位错的多余半原子面在滑移面上方,负刃型在下方。刃型位错可以滑移(沿滑移面运动,运动方向∥b)也可以攀移(垂直于滑移面运动,需空位扩散参与)。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"螺型位错\", \"def\": \"晶体中原子面以螺旋阶梯方式排列形成的线缺陷。螺型位错的柏氏矢量b平行于位错线方向。螺型位错无多余半原子面,分为右旋和左旋两种。螺型位错只能滑移不能攀移(无多余半原子面),且可在包含位错线的任意晶面上滑移(交滑移),这是螺型位错的重要特征。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"混合位错\", \"def\": \"晶体中位错线弯曲使不同部分具有不同特征--部分具有刃型特征(b⊥位错线)、部分具有螺型特征(b∥位错线),其余部分具有混合特征(b与位错线夹角介于0°和90°之间)。实际晶体中的位错多以混合位错形式存在,柏氏矢量b可分解为刃型分量be和螺型分量bs两部分。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"柏氏矢量\", \"def\": \"描述位错引起的晶格畸变大小和方向的矢量,用b表示。柏氏矢量通过柏氏回路确定:在完整晶体和含位错晶体中分别作相同的闭合回路,后者不闭合所需的闭合矢量即为柏氏矢量。柏氏矢量具有守恒性--沿位错线不变,是位错的最基本特征量。位错的能量∝|b|2,b越小位错越稳定。单位位错的b为最密排方向上的最短点阵矢量。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"位错的滑移\", \"def\": \"位错沿滑移面(包含位错线和柏氏矢量的平面)的运动。刃型位错滑移方向平行于b,螺型位错滑移方向垂直于b。滑移是位错保守运动--不涉及原子扩散,在切应力作用下即可进行。滑移所需临界分切应力(派-纳力)远小于理论剪切强度。位错滑移至晶体表面即形成滑移台阶,宏观表现为塑性变形。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"位错的攀移\", \"def\": \"刃型位错(及混合位错的刃型分量)垂直于滑移面的运动,需借助空位或间隙原子的扩散来实现。正攀移:多余半原子面缩短(空位扩散至位错线);负攀移:多余半原子面伸长(空位从位错线扩散出去)。攀移是非保守运动,需要热激活,高温下更容易进行。螺型位错无多余半原子面,不能攀移。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"弗兰克-瑞德源\", \"def\": \"一种位错增殖机制。一段两端被钉扎的位错线在切应力作用下弯曲,经历弓出→扩展→绕钉扎点旋转→相遇湮灭的过程,每次循环产生一个位错环并使原线段恢复,从而实现位错不断增殖。F-R源解释了为什么塑性变形中位错密度不降反升--变形使大量F-R源开动,产生大量新位错,导致加工硬化。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"派-纳力(Peierls-Nabarro力)\", \"def\": \"位错在理想晶体中运动时所需克服的最小点阵阻力,是位错滑移的固有阻力。派-纳力τp = [2G/(1-ν)]·exp(-2πd/b),其中d为滑移面间距,b为柏氏矢量大小(滑移方向上的原子间距)。d越大、b越小则τp越小,滑移越容易。因此滑移通常发生在d最大(密排面)、b最小(密排方向)的滑移系上。派-纳力解释了不同晶体结构滑移系的差异。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"单位位错(全位错)\", \"def\": \"柏氏矢量b等于晶体点阵中最短平移矢量(即一个点阵矢量)的位错。b为滑移方向上最近邻原子间距。滑移后原子占据的位置与滑移前完全等效,晶体结构完全恢复。FCC晶体中单位位错的b = a/2<110>,BCC中b = a/2<111>。单位位错滑移后不产生任何面缺陷。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"不全位错(部分位错)\", \"def\": \"柏氏矢量b不等于单位点阵平移矢量(小于最短点阵矢量)的位错。不全位错滑移后在滑移面上留下堆垛层错。FCC中典型不全位错包括肖克莱不全位错(b=a/6<112>,可滑移)和弗兰克不全位错(b=a/3<111>,不可滑移)。不全位错与层错相关联,常出现在FCC低层错能金属的扩展位错中。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"堆垛层错\", \"def\": \"晶体中密排面的正常堆垛顺序出现错排而形成的面缺陷。FCC正常堆垛为ABCABC...,若出现ABAB...或ABCACABC...即为层错。层错破坏了晶体的周期性但不产生晶格畸变(原子间距不变),仅改变次近邻关系。层错能是产生单位面积层错所需能量,影响扩展位错宽度和交滑移难易程度。层错能越低,扩展位错越宽,交滑移越困难。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"汤普森四面体\", \"def\": \"描述FCC晶体中位错反应和扩展位错的几何图形工具。四面体的四个面代表FCC的四个{111}滑移面,六条棱边代表十二个<110>全位错的柏氏矢量方向,各面内从顶点到对面中点的连线代表肖克莱不全位错的柏氏矢量方向。汤普森四面体为分析FCC中位错分解、扩展位错和位错反应提供了直观的参照系。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"位错反应\", \"def\": \"两个或多个位错相遇时柏氏矢量重新组合的过程。位错反应必须满足两个条件:(1)几何条件--反应前后柏氏矢量矢量和相等(∑b前=∑b后);(2)能量条件--反应后位错总能量降低(∑|b|2减小)。位错反应是形成Lomer-Cottrell锁(面角位错)、扩展位错等复杂位错组态的基本机制。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"扩展位错\", \"def\": \"FCC晶体中一个全位错分解为两个肖克莱不全位错,中间夹一层堆垛层错的组态。如a/2[110]→a/6[211]+a/6[121]。两个不全位错间的斥力与层错能平衡决定了扩展位错宽度d。层错能越低,d越大。扩展位错需先束集成全位错才能交滑移,因此层错能低的金属交滑移困难,加工硬化率高。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"对称倾侧晶界\", \"def\": \"由一系列等间距排列的同号刃型位错垂直排列构成的晶界。晶界两侧晶粒绕位错线轴相对转动θ角,位错间距D=b/[2sin(θ/2)]≈b/θ。θ<10°时为小角度晶界。对称倾侧晶界是最简单的小角度晶界模型,直观展示了晶界可用位错模型描述的基本思想。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"重合位置点阵\", \"def\": \"两晶粒点阵相互穿插时,部分阵点位置重合形成的新周期性点阵。重合位置密度用Σ值表示:Σ=重合位置点阵单胞体积/原晶粒点阵单胞体积。Σ值越小,重合位置越多,晶界结构越有序,界面能越低。Σ=3的孪晶界即为典型的低能重合位置点阵晶界。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"共格界面\", \"def\": \"两相界面两侧原子排列完全匹配、晶面一一对应的界面。共格界面两侧晶面间距可能略有差异,通过弹性应变维持共格关系。完全共格需两相晶体结构和晶格常数非常接近。共格界面的界面能最低。沉淀析出初期小尺寸析出相往往与基体保持共格关系,随析出相长大共格关系破坏。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"失配度\", \"def\": \"描述两相晶格常数差异程度的参数,δ = |a1-a2|/a1(或Δa/a)。失配度是决定两相间形成何种界面的关键因素:δ<0.05时倾向于形成共格界面,δ=0.05~0.25时形成半共格界面(通过界面位错调节失配),δ>0.25时形成非共格界面。失配度越大,界面能越高,弹性应变能越大。\", \"must\": true}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"非共格界面\", \"def\": \"两相界面处原子排列完全不匹配,不存在一一对应关系的界面。非共格界面的原子结构类似于大角度晶界,界面能最高(约500~1000 mJ/m2)。非共格界面上原子键合较差、缺陷较多,往往是扩散的快速通道和优先形核位置。大尺寸析出相或第二相颗粒与基体之间常形成非共格界面。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"内吸附\", \"def\": \"溶质原子或杂质原子在晶界、相界等晶体缺陷处富集(偏聚)的现象。驱动力是溶质原子在缺陷处的畸变能低于晶内完整区域。晶界偏聚的平衡浓度由公式Cg/C0=exp(ΔE/kT)描述,ΔE为偏聚能。内吸附对材料性能影响显著:晶界处P、S、Sb等杂质偏聚导致回火脆性;晶界处B的偏聚则改善高温合金晶界强度。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"表面能\", \"def\": \"产生单位面积新表面所需做的可逆功,单位为J/m2。表面原子配位数低于内部,处于高能非平衡状态。表面能来源于表面原子的不饱和键(悬挂键)。金属表面能通常在1~3 J/m2范围。表面能影响晶体平衡外形(Wulff定理--低能面优先暴露)、吸附、催化活性和纳米材料的稳定性。表面是扩散快速通道,其扩散系数远大于体扩散。\", \"must\": false}, {\"chapter\": \"第一章 晶体结构\", \"term\": \"界面能\", \"def\": \"晶体中两相之间(或同一相两晶粒之间)单位面积界面上的超额自由能,单位为J/m2。界面能来源于界面处原子排列不规则导致的键合不饱和和应变能。各类界面能大小顺序:共格界面 < 半共格界面 < 非共格界面 < 大角度晶界。界面能是形核(增加界面能)、晶粒长大(减小界面能)和相变过程的重要热力学参数。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"凝固\", \"def\": \"物质从液态转变为固态的过程。广义上包括结晶(液态→晶态固体)和玻璃化转变(液态→非晶态固体)。金属和合金的凝固通常是指结晶过程。凝固是材料制备(铸造、焊接、快速凝固等)的核心环节,凝固组织对材料的后续加工和使用性能有决定性影响。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"结晶\", \"def\": \"液态金属(或合金)中原子从无规则排列转变为周期性规则排列(晶体)的过程。结晶需满足热力学条件--过冷度>0(ΔG<0),且经历形核和长大两个基本阶段。结晶与凝固在金属学科中常混用,严格而言结晶强调形成晶体的有序结构,凝固涵盖更广(包括非晶)。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"过冷\", \"def\": \"液态金属冷却到理论结晶温度Tm以下仍不结晶的现象。过冷是结晶的必要条件--只有在过冷条件下,固相自由能低于液相自由能(ΔGv<0),结晶才能自发进行。过冷度(ΔT)越大,相变驱动力越大,形核越容易(临界晶核半径减小),但原子扩散能力降低,两者矛盾影响形核率。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"过冷度\", \"def\": \"理论结晶温度Tm与实际结晶温度T之差:ΔT = Tm - T。过冷度是结晶的驱动力--ΔT越大,液-固两相自由能差|ΔGv|越大,临界晶核半径r*越小,临界形核功ΔG*越低。但ΔT过大时原子扩散能力下降,反而不利于形核。形核率N随过冷度先增后减,存在最佳过冷度区间。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"结构起伏(相起伏)\", \"def\": \"液态金属中原子短程有序排列在大小和位置上随时间不断波动的现象。结构起伏是液态金属的固有特征,为结晶形核提供了必要的结构条件。在过冷液相中,大于临界晶核半径r*的结构起伏可成为稳定的晶核并继续长大。结构起伏的统计分布由Boltzmann因子exp(-ΔG/kT)决定。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"能量起伏\", \"def\": \"系统中微观区域能量偏离统计平均值而瞬时波动的现象。能量起伏与结构起伏共同作用,使某些原子团可能克服形核能垒形成晶核。在非均匀形核中,现成表面(模壁、杂质颗粒等)降低了形核功ΔG*(降低因子S(θ):完全润湿θ=0时S(θ)=0;完全不润湿θ=180°时S(θ)=1),能量起伏的作用相对减小。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"均匀形核\", \"def\": \"在均匀液相中完全依靠液体自身的结构起伏和能量起伏形成晶核的过程。均匀形核的临界形核功ΔG* ∝ 1/ΔT2,需要极大过冷度(约0.2Tm)才能实现可观测的形核率。实际生产中由于熔体中不可避免地存在外来质点和模壁等现成表面,均匀形核极少发生,金属结晶几乎全部为非均匀形核。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"非均匀形核\", \"def\": \"晶核依附于液相中现成表面(模壁、杂质颗粒、未熔质点等)形成的形核方式。非均匀形核的临界形核功ΔG*不均匀 = ΔG*均匀 × S(θ),S(θ)为形状因子。当润湿角θ=0°时ΔG*不均匀=0(不需要形核功);θ=180°时ΔG*不均匀=ΔG*均匀。θ越小形核越容易。实际生产中通过添加孕育剂(变质处理)创造有利的非均匀形核条件以细化晶粒。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"临界晶核半径\", \"def\": \"在给定过冷度下,能够稳定存在并继续长大的最小晶核半径,用r*表示。r* = 2σ/ΔGv,其中σ为比表面能,ΔGv为单位体积液固两相自由能差。当晶胚半径r < r*时,长大使系统自由能升高→晶胚消溶;r > r*时,长大使自由能降低→晶核稳定长大。过冷度越大,ΔGv越大,r*越小--越容易形核。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"临界晶核形核功\", \"def\": \"形成临界晶核所需的最大附加能量(能量起伏),用ΔG*表示。ΔG* = 16πσ3/(3ΔGv2) ∝ 1/ΔT2。ΔG*对应于r=r*时ΔG曲线的极大值--晶胚越过此能垒后即能自发长大。非均匀形核的ΔG* = ΔG*均匀 × S(θ)(S(θ)<1),通过降低形核功促进形核。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"形核率\", \"def\": \"单位体积液相中单位时间内形成的晶核数目,用N表示,单位为cm-3·s-1。N ∝ exp(-ΔG*/kT) × exp(-Qd/kT),其中第一个因子代表获得能量起伏的概率(随ΔT增大而增大),第二个因子代表原子扩散能力(随ΔT增大而减小)。两者矛盾使N-ΔT曲线呈C形--存在最大形核率对应的最佳过冷度。\", \"must\": true}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"生长线速度\", \"def\": \"晶体在垂直于固-液界面方向上单位时间内长大的距离,单位为cm/s。生长线速度取决于界面微观结构(光滑/粗糙)、过冷度和扩散能力。粗糙界面以连续长大方式生长,线速度大(∝ΔT);光滑界面需二维形核或以螺型位错台阶长大,线速度较小。生长线速度与形核率共同决定最终晶粒大小和形态。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"光滑界面\", \"def\": \"在原子尺度上固-液界面是平滑的,原子附着优先在台阶或扭折位置进行的界面。光滑界面是生长速度较慢的界面类型。其生长机制需借助二维形核或螺型位错提供的永不消失台阶。典型的小平面生长材料(如Si、Ge、金属间化合物)具有光滑界面。光滑界面生长易形成规则外形的晶体或树枝晶。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"粗糙界面\", \"def\": \"在原子尺度上固-液界面是粗糙的(约有50%的原子位置被占据),液相原子几乎可以在界面任何位置附着的界面。粗糙界面以连续长大(均匀附着)方式生长,生长速度快(正比于过冷度)。大多数金属的固-液界面为粗糙界面,结晶时形成非小平面(非规则外形)的晶粒形态。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"动态过冷度\", \"def\": \"晶体长大过程中为使生长界面以一定速度推进所需的过冷度,即界面温度低于Tm的值。动态过冷度是晶体长大的驱动力。粗糙界面的动态过冷度很小(约0.01~0.05°C),生长速度快;光滑界面的动态过冷度大,生长速度慢。动态过冷度与晶体长大机制密切相关。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"柱状晶\", \"def\": \"沿特定方向(通常垂直于模壁向内)择优生长形成的细长柱状晶粒。柱状晶在铸锭中位于表面细晶区以内、中心等轴晶区以外。柱状晶的生长方向平行于最大温度梯度方向(热流方向),晶体学上沿择优生长方向(FCC为<100>方向)。柱状晶使铸件产生各向异性,严重时形成穿晶组织降低性能,通常希望通过控制浇注条件促进等轴晶形成来抑制柱状晶过度生长。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"等轴晶\", \"def\": \"各方向尺寸大致相等的粒状晶粒。等轴晶通常通过非均匀形核在铸锭中心区域形成(成分过冷使界面前沿大量形核)。等轴晶组织各向同性,力学性能均匀,是铸造中通常希望获得的组织形态。细化等轴晶的方法包括:降低浇注温度、增加过冷度、变质处理(添加孕育剂)、振动搅拌、快速凝固等。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"树枝状晶\", \"def\": \"晶体沿特定晶体学方向择优生长形成树枝状形态的晶体。一次枝晶臂沿最大温度梯度方向生长,二次和三次枝晶臂在一次臂上垂直生长。树枝晶是铸造组织中最常见的晶体形态,根本原因是成分过冷使平面界面失稳。树枝晶的枝晶间距(一次间距λ1、二次间距λ2)是重要微观结构参数--λ2越小,力学性能越好。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"单晶\", \"def\": \"整个固体材料由一块晶体组成,内部不存在晶界。单晶具有各向异性的特点--不同晶体学方向上的物理、力学性能显著不同(如弹性模量、屈服强度、导电性等)。制备方法包括Czochralski法(直拉法)和Bridgman法。单晶硅是大规模集成电路的基础材料,单晶高温合金涡轮叶片(定向凝固)消除了横向晶界,大幅提高耐高温性能。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"非晶态\", \"def\": \"原子排列不具长程有序性的固态(原子排列类似液态但宏观上为固体)。非晶态合金(金属玻璃)通过极快速冷却(>106 K/s)抑制结晶而获得。非晶态无晶界、位错等缺陷,具有优异的强度(接近理论强度)、硬度、耐腐蚀性和软磁性能。非晶态在热力学上为亚稳态,加热到一定温度(晶化温度)会转变为晶态。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"微晶\", \"def\": \"晶粒尺寸在微米级(通常<10μm)甚至纳米级(<100nm)的多晶体。微晶材料因晶粒极细,晶界体积分数大,表现出不同于粗晶材料的特殊性能--高强度和硬度(Hall-Petch效应显著)、良好的塑性(纳米晶可能出现反常的室温超塑性)。微晶可通过快速凝固、大变形+再结晶、机械合金化等途径制备。\", \"must\": false}, {\"chapter\": \"第二章 凝固与结晶\", \"term\": \"准晶\", \"def\": \"具有长程有序(在衍射谱中呈尖锐布拉格峰)但不具平移周期性(不允许用单胞在空间重复填充)的固态。准晶具有传统晶体学不允许的五次、八次、十次和十二次旋转对称性。1984年Shechtman在急冷Al-Mn合金中首次发现准晶(获2011年诺贝尔化学奖)。准晶具有高硬度、低摩擦系数、低热导率等特殊性能,可用作表面涂层和不粘锅等。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"滞弹性\", \"def\": \"材料在弹性范围内加载或卸载时应变滞后于应力的现象。滞弹性表现为应力-应变曲线形成一个闭合回线(滞后环),回线面积代表一个循环中消耗的能量(内耗)。滞弹性源于应力作用下点缺陷重新分布、间隙原子在应力场中的有序化、晶界滑动等弛豫过程。低碳钢的明显屈服现象(Cottrell气团)的物理本质即与滞弹性弛豫有关。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"滑移\", \"def\": \"晶体的一部分相对于另一部分沿特定晶面(滑移面)和晶向(滑移方向)的平移滑动,是金属塑性变形的最主要方式。滑移面通常是密排面,滑移方向是密排方向。一组滑移面和该面上的一个滑移方向构成一个滑移系。FCC有12个{111}<110>滑移系,BCC有12~48个,HCP仅3~6个。滑移使大量位错运动至晶体表面形成宏观可见的滑移线(带)。\", \"must\": true}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"孪生\", \"def\": \"晶体在切应力作用下,一部分沿特定晶面(孪生面)和晶向(孪生方向)发生均匀切变,变形部分与未变形部分以孪生面为镜面对称的变形方式。孪生与滑移的本质区别:(1)孪生每次原子移动小于一个原子间距(非整数倍柏氏矢量),变形均匀;(2)孪生直接变形量小,但可改变晶体取向使不利滑移系变为有利取向,间接促进进一步滑移;(3)孪生通常发生在滑移困难时(HCP金属、低温BCC金属)。\", \"must\": true}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"滑移带\", \"def\": \"大量位错在平行滑移面上运动后在晶体表面形成的可见台阶。单个位错滑移至表面产生的台阶高度为一个柏氏矢量(约0.1nm量级),肉眼不可见。成百上千个位错在同一滑移面上滑移后累积形成滑移线(高度约10~100nm);多个平行滑移面上的滑移线聚集形成滑移带(间距约1~10μm)。滑移带是塑性变形的微观证据。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"加工硬化(形变强化)\", \"def\": \"金属在塑性变形过程中流变应力(强度、硬度)随变形量增加而不断增大的现象。微观机制:变形使位错大量增殖(F-R源开动),位错密度从106~108 cm-2增至1011~1012 cm-2,位错间产生交割、缠结、塞积等交互作用,使位错运动阻力增大。加工硬化使进一步变形所需应力增大,是冷加工成形(拉拔、冲压、冷轧等)的工艺基础,同时也是重要的强化手段。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"形变织构\", \"def\": \"多晶体在塑性变形过程中各晶粒的取向沿外力方向发生择优转动,使原本随机取向的晶粒趋于某一或某些特定取向的取向分布状态。形变织构使多晶体产生各向异性。主要类型:(1)丝织构--拉拔或挤压变形时各晶粒的特定晶向平行于轴线排列(FCC为<111>+<100>);(2)板织构--轧制时特定晶面和晶向平行于板面和轧向。织构对深冲性能(如制耳效应)影响显著。\", \"must\": true}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"微观残余应力(第二类残余应力)\", \"def\": \"在单个晶粒或几个晶粒范围内平衡的内应力,是变形后各晶粒或晶粒内部变形不均匀所致。微观残余应力来源于:(1)各晶粒取向不同导致的变形不均匀;(2)晶界阻碍位错运动造成的应力集中;(3)位错塞积群前端的高应力。微观残余应力是加工硬化的重要来源之一,在回复阶段可通过位错重排(多边形化)部分消除。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"宏观残余应力(第一类残余应力)\", \"def\": \"在材料整体范围内(宏观尺度)自相平衡的内应力。来源包括:不均匀塑性变形(如喷丸、表面滚压使表面产生压应力)、不均匀热胀冷缩(如淬火热应力)、不均匀相变(如马氏体相变体积膨胀)。宏观残余应力对材料使用性能有重大影响:表面残余压应力提高疲劳强度,残余拉应力则促进应力腐蚀和疲劳裂纹扩展。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"割阶\", \"def\": \"两个相交滑移面上的位错交割时,在位错线上产生一段长度等于另一滑移面间距的短段,当该短段位于原滑移面外时称为割阶。割阶的存在增加了位错运动的阻力(阻碍滑移),是加工硬化的微观机制之一。割阶可以是刃型或螺型特征,取决于交割位错的相对取向。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"扭折\", \"def\": \"晶体在受到平行于滑移面的压应力(或垂直于滑移面的拉应力)时,滑移不能进行,局部区域发生晶格旋转而形成的一种不均匀塑性变形方式。扭折带是局部取向变化区域,位错在其中重排形成亚晶界。扭折常出现在HCP金属(滑移系少)和层状结构材料中,如Zn单晶受压时产生扭折带。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"交滑移\", \"def\": \"螺型位错从原滑移面转移到另一个与之相交的滑移面上继续滑移的过程。因为螺型位错线平行于b,b与位错线都在交叉滑移面的交线上,所以任何包含位错线的面都可能是螺型位错的滑移面。交滑移对FCC金属的加工硬化行为影响显著--层错能越高,扩展位错宽度越小→越容易束集→交滑移越容易→加工硬化率越低。\", \"must\": true}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"多滑移\", \"def\": \"两个或多个滑移系同时在晶体中开动的现象。多滑移需要外加应力方向使多个滑移系的临界分切应力同时达到τc。多滑移导致不同滑移面上的位错交割、缠结和割阶形成,使加工硬化速率远高于单滑移阶段(第II阶段硬化率最高)。多滑移是理解单晶体加工硬化三阶段曲线的关键。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"取向因子(Schmid因子)\", \"def\": \"描述外加应力方向相对于滑移系取向关系的参数:cosφ·cosλ,其中φ为滑移面法线与外力轴的夹角,λ为滑移方向与外力轴的夹角。滑移面上的分切应力τ=σ·cosφ·cosλ(Schmid定律),当τ达到临界分切应力τc时滑移开动。取向因子最大值为0.5(φ=λ=45°时),此时屈服应力最小。取向因子决定了多晶体各晶粒屈服顺序和变形不均匀性。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"脆性断裂\", \"def\": \"断裂前几乎不发生明显宏观塑性变形(延伸率<2~5%)的断裂方式。脆性断裂的裂纹扩展速率极快(接近声速),断裂面垂直于最大正应力方向,断口呈光亮晶粒状(沿晶脆断)或河流花样(穿晶解理脆断)。BCC和HCP金属在低温、高应变速率下易发生脆性断裂。脆性断裂的微观机制主要为解理断裂--沿特定解理面(BCC为{100}面)的穿晶断裂。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"韧性断裂\", \"def\": \"断裂前发生显著宏观塑性变形的断裂方式。韧性断裂过程:微孔在夹杂物或第二相颗粒处形核→微孔长大→微孔聚合(缩颈)→最终断裂。断口呈暗灰色纤维状,微观上为韧窝特征。韧性断裂是工程构件的主要断裂方式,断裂过程中吸收大量能量。材料的韧脆转变受温度、应变速率和应力状态(三轴应力)影响。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"解理\", \"def\": \"晶体在正应力作用下沿特定低指数晶面(解理面)发生的穿晶脆性断裂。BCC金属的解理面为{100}面,HCP为{0001}基面。解理断裂的特征微观形貌为河流花样--解理裂纹跨越螺型位错时形成的台阶汇流图案。FCC金属一般不发生解理断裂(层错和位错运动协调性好,应力集中难以积累到解理所需的临界水平)。\", \"must\": false}, {\"chapter\": \"第三章 塑性变形\", \"term\": \"断裂韧性\", \"def\": \"材料抵抗裂纹失稳扩展能力的力学性能指标,用平面应变断裂韧性KIC表示,单位为MPa·m1/2。KIC越大,含裂纹构件在给定应力下允许存在的临界裂纹尺寸越大--即材料越不容易发生脆性断裂。KIC是材料-裂纹几何-加载条件共同决定的参数,综合反映材料的强度和塑性。Griffith理论给出σf = √(2Eγ/πa),奠定了断裂力学的基础。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"回复\", \"def\": \"冷变形金属在较低温度加热时,在光学显微组织发生可见变化之前,通过点缺陷消除和位错重排使部分性能(电阻率、内应力)恢复的过程。回复阶段位错密度基本不变,强度、硬度变化不大。主要变化:空位和间隙原子大量消除→电阻率显著下降;位错发生多边形化(攀移+滑移形成位错墙→亚晶)→内应力大部分消除。回复动力学特征为初始速率快、随后减慢。\", \"must\": true}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"再结晶\", \"def\": \"冷变形金属加热到一定温度以上时,通过形核和长大形成新的无畸变等轴晶粒、完全取代冷变形组织的过程。驱动力为冷变形储存能(约占总变形能的1%~10%)。再结晶后位错密度从1011~1012 cm-2急剧降至106~108 cm-2,强度、硬度显著降低,塑性恢复至变形前水平。再结晶温度Tr≈(0.35~0.40)Tm(K),Tr受变形量、原始晶粒尺寸、退火温度和杂质元素等因素影响。\", \"must\": true}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"多边化\", \"def\": \"回复后期位错通过攀移和滑移重排,由变形态的缠结网络重新排列为垂直于滑移面的低位错墙,形成亚晶界,将变形晶粒分割为多个取向略有差异的亚晶的过程。多边化是回复阶段最重要的组织变化--位错密度不显著降低但位错组态由高能缠结向低能的多边形亚晶转变,使弹性应变能降低,为后续再结晶提供形核位置。\", \"must\": true}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"二次再结晶(异常晶粒长大)\", \"def\": \"再结晶完成后若继续加热,少数晶粒因晶界迁移率优势而急剧吞并周围正常晶粒异常长大的现象。二次再结晶不同于正常晶粒长大(均匀长大),其特征为:少数晶粒快速长大(可达mm甚至cm级),晶粒尺寸分布极不均匀,组织中出现异常的粗大晶粒。二次再结晶严重恶化材料力学性能(粗晶脆性),热处理中应避免。产生原因与第二相粒子的钉扎作用减弱(高温溶解或粗化)、织构和表面效应有关。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"弓出形核\", \"def\": \"再结晶的一种形核机制。当晶界两侧位错密度差异较大时,高位错密度一侧的亚晶界向低位错密度一侧弓出生长,形成由低位错密度区包围的再结晶核心。弓出形核通常发生在变形量较小(位错密度分布不均匀)的金属中,是再结晶形核的主要方式之一。弓出的驱动力是晶界两侧位错密度差引起的应变能差。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"亚晶合并形核\", \"def\": \"再结晶的一种形核机制。相邻亚晶通过亚晶界上位错的攀移和滑移使亚晶界消失,两个或多个亚晶合并为一个较大的亚晶。当合并后的亚晶尺寸超过临界晶核半径且与大角度晶界相邻时,该亚晶可通过大角度晶界的快速迁移长大成为再结晶晶核。亚晶合并形核多发生在变形量较大(位错分布较均匀)的金属中。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"动态回复\", \"def\": \"在热加工(变形温度高于再结晶温度)过程中同时发生的回复过程。变形产生位错增殖,同时螺型位错通过交滑移、刃型位错通过攀移发生重排和部分对消,位错密度达到动态平衡。动态回复导致流变曲线出现稳态流变(应力不再随应变增加),组织特征为含有亚晶的变形晶粒(动态多边形化)。高层错能金属(如Al、α-Fe)热加工时主要发生动态回复。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"流线\", \"def\": \"热加工(锻造、轧制、挤压等)过程中,铸锭中的夹杂物、第二相颗粒和枝晶偏析区域沿变形方向被拉长而形成的纤维状组织。流线在宏观酸浸后可肉眼观察到。流线使材料力学性能(强度、塑性、冲击韧性)沿流线方向和垂直于流线方向产生显著各向异性--沿流线方向性能最好。设计锻件时应使最大受力方向平行于流线方向。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"带状组织\", \"def\": \"热加工后钢材中出现的铁素体与珠光体沿变形方向交替排列的层状组织。带状组织的成因:钢液凝固时产生的枝晶偏析(Mn、P等元素在枝晶间偏聚)在热轧时沿变形方向延伸,冷却时先共析铁素体优先在贫Mn(贫合金元素)区域析出,珠光体在富Mn区域形成,形成黑白交替的带状。带状组织使钢材横向塑性和韧性降低,可通过扩散退火(均匀化)减轻。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"再结晶激活能\", \"def\": \"再结晶过程中原子跃迁所需克服的能垒,用Qt表示,单位为kJ/mol。Qt可通过不同温度下的再结晶完成时间t与温度T之间的Arrhenius关系(1/t∝exp(-Qt/RT))测定。再结晶激活能的大小反映了再结晶进行的难易程度,与自扩散激活能接近(说明再结晶由原子扩散控制),受溶质原子、第二相粒子和变形量等因素影响。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"超塑性\", \"def\": \"材料在特定条件下(合适的温度、极低的应变速率和细晶组织)表现出极大的延伸率(可达数百%~数千%)而不发生颈缩和断裂的现象。超塑性的条件:(1)温度>0.5Tm;(2)应变速率<10-3 s-1;(3)晶粒尺寸细小(<10μm)且稳定。超塑性变形的微观机制主要为晶界滑移+扩散蠕变协调(伴随晶粒旋转)。利用超塑性可一次成形复杂形状构件(如航空零部件),降低加工成本。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"应变速率敏感系数\", \"def\": \"描述材料流变应力对应变速率依赖程度的参数:m = d(lnσ)/d(lnε̇)。m值是表征超塑性的关键参数--m值越大,变形越均匀,颈缩越不容易发生(m>0.3时即呈现超塑性)。一般金属m<0.2(室温),超塑性状态下m可达0.5~0.8。m值高的材料在局部颈缩区域因应变速率增大→流变应力显著提高→变形转移至其他区域→变形均匀。\", \"must\": false}, {\"chapter\": \"第四章 回复再结晶\", \"term\": \"临界变形度\", \"def\": \"再结晶后晶粒尺寸与冷变形量关系曲线中,使再结晶晶粒尺寸达到最大的特定小变形量(通常约2%~10%)。在该变形量下,变形储能不足以产生大量均匀形核,仅少数位置满足形核条件→形核率极低→最终晶粒极粗大。临界变形度在热处理工艺中必须避免!消除临界变形度粗晶的方法是增大变形量(例如大于15%~20%),确保再结晶后获得细晶组织。\", \"must\": true}, {\"chapter\": \"第五章 扩散\", \"term\": \"扩散流量\", \"def\": \"单位时间内通过垂直于扩散方向单位截面积的扩散物质总量(原子数或质量),用J表示,单位为原子数/(m2·s)或kg/(m2·s)。扩散流量是描述扩散快慢的标量(一维扩散)或矢量(三维扩散),由Fick第一定律和Fick第二定律描述。扩散流量是理解渗碳、渗氮、脱碳、氧化、烧结等材料高温过程的基础物理量。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"扩散通量\", \"def\": \"与扩散流量含义相同,均指单位时间通过单位面积的扩散物质量,用J表示。在三维情况下扩散通量为矢量,方向沿浓度梯度负方向(Fick第一定律:J = -D·dC/dx)。扩散通量的大小取决于扩散系数D和浓度梯度dC/dx(稳态扩散),或由Fick第二定律的非稳态解描述。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"恒稳态扩散(稳态扩散)\", \"def\": \"系统中各点浓度不随时间变化的扩散状态,即∂C/∂t = 0。稳态扩散条件下通过任意截面的扩散通量J为常数,由Fick第一定律描述:J = -D·dC/dx。薄壁渗碳管、扩散氢渗透膜等工程问题在长时间运行后可近似视为稳态扩散。稳态扩散问题的求解最简单--只需确定浓度分布C(x)后代入Fick第一定律即可。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"非恒稳态扩散(非稳态扩散)\", \"def\": \"系统中各点浓度随时间变化的扩散状态,即∂C/∂t ≠ 0。非稳态扩散由Fick第二定律描述:∂C/∂t = D·∂2C/∂x2(D为常数时)。三种典型初始/边界条件下的解析解:(1)半无限长恒定表面浓度扩散(误差函数解C=Cs·erfc[x/(2√Dt)])--渗碳过程;(2)薄膜源扩散(高斯解)--示踪原子实验;(3)扩散偶(Boltzmann-Matano法)。非稳态扩散是实际热处理扩散问题的普遍状态。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"扩散激活能\", \"def\": \"原子从一个平衡位置跃迁至相邻平衡位置所需克服的最小能垒,用Q表示,单位为kJ/mol或eV。扩散系数与温度满足Arrhenius关系:D = D0·exp(-Q/RT)。Q可通过测定不同温度下的D值,以lnD对1/T作图(直线斜率=-Q/R)求得。间隙扩散的Q较小(仅需克服点阵膨胀能,如C在γ-Fe中Q≈142kJ/mol),置换扩散(空位机制)的Q较大(需空位形成能+跃迁能)。扩散激活能是理解扩散微观机制的核心参数。\", \"must\": true}, {\"chapter\": \"第五章 扩散\", \"term\": \"全渗层深度\", \"def\": \"化学热处理(如渗碳)中,从工件表面到心部原始成分处(浓度与基体相同)的总距离。全渗层深度 = 渗层深度(有效渗层深度)+ 过渡层深度。在渗碳工艺中,全渗层深度由Fick第二定律的误差函数解估算:x ≈ √(Dt),在一定温度和气氛条件下由扩散系数D和保温时间t决定。全渗层深度与有效渗层深度(通常以含碳量0.40%处为界)的概念不同。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"定浓度渗层深度(有效渗层深度)\", \"def\": \"化学热处理中,从工件表面到某一规定浓度(如渗碳层的含碳量0.40%处)的距离。用误差函数解计算:C(x,t)=Cs·erfc[x/(2√Dt)],给定C(x,t)值可反求x。在渗碳工艺中,有效渗层深度=表面至含碳量0.40%(或某约定值)的垂直距离。它是衡量渗碳效果和制定渗碳工艺的关键参数,取决于温度、时间、碳势和钢种。\", \"must\": false}, {\"chapter\": \"第五章 扩散\", \"term\": \"上坡扩散\", \"def\": \"溶质原子从低浓度区向高浓度区扩散的反常扩散现象。上坡扩散的根本原因:扩散的驱动力不是浓度梯度而是化学位梯度(∂μ/∂x)。当化学位梯度与浓度梯度方向相反时即发生上坡扩散。典型例子:(1)Spinodal分解(浓度起伏放大);(2)弹性应力梯度引起的扩散(大原子向拉应力区偏聚、小原子向压应力区偏聚);(3)晶界偏聚(溶质原子在晶界的化学位低于晶内);(4)电场/温度梯度作用下的扩散。\", \"must\": true}, {\"chapter\": \"第五章 扩散\", \"term\": \"短路扩散\", \"def\": \"原子沿晶体缺陷(晶界、位错、自由表面)的扩散,因这些缺陷通道的扩散激活能远低于体扩散(晶格扩散),扩散速度快2~4个数量级以上,故称“短路扩散”。三种短路扩散通道的扩散系数排序:D表面 > D晶界 > D位错 > D体。温度越低,短路扩散的相对贡献越大(体扩散与短路扩散的Q不同)。细晶材料、薄膜材料和低温下短路扩散的重要性尤为突出。\", \"must\": true}, {\"chapter\": \"第五章 扩散\", \"term\": \"反应扩散\", \"def\": \"扩散过程中伴随有新相生成的扩散。当扩散组元超过固溶体溶解度极限时,在界面上形成化合物(中间相)层。反应扩散的特点是扩散层中浓度分布不连续--每个相区对应一定的浓度范围,相界面处浓度跃变。典型例子:(1)钢的渗碳在表面形成Fe3C层(碳超出γ-Fe溶解度时);(2)钢的渗氮形成ε-Fe2-3N和γ'-Fe4N等化合物层;(3)金属氧化--氧化层生长(同时涉及离子扩散+电子传导+界面反应)。\", \"must\": true}, {\"chapter\": \"第六章 固态相变\", \"term\": \"α-Fe\", \"def\": \"铁在912°C以下的BCC同素异构体。α-Fe的晶格常数为0.286nm,配位数8,致密度0.68。α-Fe的八面体间隙虽比γ-Fe大(数量少但单个尺寸大),但间隙分布不利于碳原子的进入--碳在α-Fe中的最大溶解度仅0.0218%(727°C时),室温下仅约0.0008%。α-Fe在770°C以下具有铁磁性(Curie点)。α-Fe中固溶少量碳或其它元素即为铁素体。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"铁素体(F或α)\", \"def\": \"碳溶入α-Fe(BCC)中形成的间隙固溶体。铁素体的含碳量极低(最大0.0218%),力学性能接近纯铁--强度低(σb≈250MPa)、硬度低(≈80HB)、塑性好(δ≈50%)。铁素体在室温下稳定存在,是亚共析钢室温平衡组织的主要组成相之一。铁素体为体心立方结构,低温下具有铁磁性。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"γ-Fe\", \"def\": \"铁在912~1394°C之间的FCC同素异构体。γ-Fe的晶格常数为0.357nm(高温下),配位数12,致密度0.74。γ-Fe的八面体间隙虽比α-Fe小(数量多但单个尺寸小),但其FCC结构中的八面体间隙为正八面体对称,适合碳原子进入--碳在γ-Fe中的最大溶解度达2.11%(1148°C)。γ-Fe无铁磁性。γ-Fe中固溶碳即为奥氏体--钢热处理的核心相。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"奥氏体(A或γ)\", \"def\": \"碳溶入γ-Fe(FCC)中形成的间隙固溶体。奥氏体的最大溶碳量为2.11%(1148°C),具有FCC结构,塑性好(易塑性变形),无铁磁性。奥氏体是钢在高温下存在的相,是大多数热处理工艺的起始相--加热至奥氏体区后通过不同冷却方式获得不同组织(珠光体、贝氏体、马氏体等),从而实现组织调控。奥氏体化温度是热处理的核心工艺参数。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"渗碳体(Fe3C)\", \"def\": \"铁与碳形成的间隙化合物,含碳量6.69%,正交晶系复杂晶体结构。Fe3C硬度极高(≈800HV)、极脆(延伸率≈0%),是铁碳合金中最主要的强化相。Fe3C在热力学上为亚稳相--在高温长时间保温可分解为铁和石墨(Fe3C→3Fe+C)。Fe3C在珠光体中呈层片状(与铁素体交替排列),在回火索氏体中呈细小粒状(回火时间充分时球化)。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"石墨\", \"def\": \"碳的稳定态同素异构体,六方层状结构。在铁碳合金中石墨是稳定相(与渗碳体相比)。灰铸铁中碳以石墨片状存在--石墨尖端为应力集中源→灰铸铁抗拉强度低,但石墨良好的润滑性和吸振性使其广泛用于机床床身、发动机缸体等。球墨铸铁(石墨球化处理)大幅提高了强度和塑性,是重要的工程结构材料。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"一次渗碳体\", \"def\": \"从液相中直接结晶析出的渗碳体,形态为粗大板条状。在Fe-Fe3C相图中,过共晶白口铸铁(C>4.3%)从液相冷却时,先在液相中结晶出一次渗碳体,剩余液相在1148°C发生共晶转变形成莱氏体。一次渗碳体粗大而脆,使材料极脆,无直接使用价值--白口铸铁通常作为炼钢原料或经退火获得可锻铸铁。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"二次渗碳体\", \"def\": \"从奥氏体中析出的渗碳体(沿奥氏体晶界网状析出)。过共析钢(0.77%~2.11%C)从奥氏体区缓冷时,沿Acm线析出先共析二次渗碳体(网状)。网状二次渗碳体沿晶界分布使晶界脆化→材料冲击韧性严重下降。消除网状二次渗碳体的方法:正火(空冷加快冷却速度→抑制网状析出→得细片状珠光体+少量半连续渗碳体)或球化退火(使渗碳体球化成粒状)。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"三次渗碳体\", \"def\": \"从铁素体中析出的微量渗碳体。铁素体中碳的溶解度随温度降低而减小(从727°C的0.0218%降至室温约0.0008%),过剩碳以三次渗碳体形式沿铁素体晶界或晶内位错线析出。三次渗碳体量极少,对力学性能影响通常可忽略,但在深冲用低碳薄板钢中三次渗碳体沿晶界的析出会导致时效脆化。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"珠光体(P)\", \"def\": \"铁素体(α)与渗碳体(Fe3C)的机械混合物,是含碳量0.77%的奥氏体在727°C发生共析转变(γ→α+Fe3C)的产物。典型形态为铁素体与渗碳体层片状交替排列(层状珠光体)。珠光体片间距取决于过冷度--过冷度越大片间距越小,按粗细分为珠光体(>0.4μm)、索氏体(0.2~0.4μm)、屈氏体(<0.2μm)。珠光体强度较高(≈800MPa),综合力学性能介于铁素体和渗碳体之间。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"莱氏体(Ld)\", \"def\": \"含碳量4.3%的铁碳合金在1148°C发生共晶转变(L→γ+Fe3C)的产物,是奥氏体与渗碳体的机械混合物。室温莱氏体(变态莱氏体Ld')中的奥氏体已转变为珠光体。莱氏体组织中含有大量连续分布的渗碳体→极硬极脆→白口铸铁的特征组织。白口铸铁因韧性极差不能用于承受冲击的构件,但在耐磨件中有应用。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"变态莱氏体(Ld')\", \"def\": \"莱氏体中共晶奥氏体在冷却过程中转变为珠光体后的室温组织--珠光体+渗碳体的混合物。变态莱氏体保留了莱氏体的原始共晶形貌(渗碳体连续基体+分布于其中的珠光体岛)。变态莱氏体是白口铸铁的室温组织特征--组织中含有大量渗碳体,硬度极高,脆性极大。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"工业纯铁\", \"def\": \"含碳量低于0.0218%的铁碳合金。室温组织为铁素体+少量三次渗碳体。工业纯铁具有高磁导率、高塑性、低强度,主要用于电磁材料(继电器、电磁铁芯等),在机械结构中很少用作承载件。工业纯铁也是理解铁碳相图中单相铁素体区(α区)的典型材料。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"亚共析钢\", \"def\": \"含碳量为0.0218%~0.77%的钢。室温平衡组织为先共析铁素体+珠光体。随含碳量增加,珠光体比例增大(从0%到100%),强度硬度升高。典型代表:20钢(C≈0.2%,渗碳用)、45钢(C≈0.45%,调质用)、65Mn(C≈0.65%,弹簧用)。亚共析钢淬火加热温度=Ac3+30~50°C(完全奥氏体化后淬火,避免铁素体软点)。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"共析钢\", \"def\": \"含碳量为0.77%的钢。室温平衡组织为100%珠光体(层片状)。共析钢含碳量恰好等于共析点,奥氏体在727°C全部转变为珠光体,无先共析相。共析钢热处理后硬度高但韧性较差,典型应用为钢轨、高强钢丝等耐磨件。T8钢(含碳约0.8%)为接近共析成分的碳素工具钢。共析钢淬火加热温度=Ac1+30~50°C。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"过共析钢\", \"def\": \"含碳量为0.77%~2.11%的钢。室温平衡组织为先共析二次渗碳体(网状)+珠光体。随含碳量增加,网状二次渗碳体增多,脆性显著增大。过共析钢主要用于工模具(高硬度、高耐磨性要求),典型代表:T10钢(C≈1.0%)、T12钢(C≈1.2%)、GCr15轴承钢。过共析钢淬火加热温度=Ac1+30~50°C(不完全淬火--保留粒状渗碳体提高耐磨性)。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"白口铸铁\", \"def\": \"含碳量为2.11%~6.69%的铁碳合金,凝固时发生共晶转变,碳主要以渗碳体形式存在,断口呈银白色。白口铸铁硬度极高(>450HB),脆性极大,切削加工困难,不能用于承受冲击的构件。主要用途:耐磨件(如磨球、衬板)、可锻铸铁的坯料(经石墨化退火使渗碳体分解为团絮状石墨→得到可锻铸铁)。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"灰口铸铁\", \"def\": \"含碳量为2.5%~4.0%的铁碳合金,适当控制成分和冷却速度使碳主要以片状石墨存在,断口呈灰色。灰口铸铁的基体组织可为铁素体、珠光体或铁素体+珠光体。石墨片的存在使其具有优良的铸造性、减振性、耐磨性和切削加工性,但抗拉强度和塑性低。广泛用于发动机缸体、机床床身、泵壳等。通过变质处理可得球墨铸铁(球状石墨),综合力学性能大幅提升。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"宏观偏析\", \"def\": \"在铸锭(或大铸件)宏观范围内的化学成分不均匀性,可通过宏观化学分析或酸浸低倍检验检测。宏观偏析包括正常偏析(正偏析)、反常偏析(反偏析)和比重偏析。宏观偏析使铸件性能不均匀,严重恶化力学性能和耐腐蚀性。通过控制浇注条件、电磁搅拌、随后的扩散退火(均匀化退火)等措施可减轻。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"正常偏析(正偏析)\", \"def\": \"凝固过程中,由于先凝固的固相溶质含量低于液相(分配系数k0<1时),溶质被推至界面前沿液相中,随凝固进行后凝固部分的溶质浓度越来越高,形成从表面向中心逐渐升高的浓度分布。正偏析产生的原因是溶质分配系数k0≠1。正偏析可通过扩散退火(高温长时间保温使溶质均匀化扩散)有效减轻。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"反常偏析(反偏析)\", \"def\": \"铸锭表面溶质浓度反而高于内部的异常偏析现象。反偏析的产生原因:(1)凝固收缩在表面和枝晶间产生负压,将富溶质母液从内部沿枝晶通道吸至表面;(2)凝固过程中表面产生裂纹,富溶质液体渗出填充。反偏析常见于锡青铜等凝固温度范围宽的合金中。反偏析难以用均匀化退火消除,需从铸造工艺参数控制入手。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"比重偏析\", \"def\": \"由于初生相与剩余液相之间存在密度差,初生相在重力作用下上浮或下沉形成的宏观成分不均匀。如过共晶铸铁中石墨上浮(密度小)、铅青铜中铅下沉(密度大)。防止措施:加快冷却速度(减小上浮/下沉时间)、搅动、加入变质剂改变初生相形态。比重偏析在凝固后期形成,一旦产生无法通过后续处理消除。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"显微偏析\", \"def\": \"在晶粒或枝晶尺度范围内的化学成分不均匀性,需借助显微镜和微区成分分析(如EPMA电子探针)才能检测。显微偏析包括胞状偏析、枝晶偏析和晶界偏析。显微偏析产生的原因是不平衡凝固--固相中扩散不充分导致晶粒内部成分不均匀。显微偏析可通过扩散退火(均匀化)在固相中通过短程扩散有效消除。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"胞状偏析\", \"def\": \"胞状组织(胞状晶)的胞壁与胞内部之间的成分差异。胞状凝固时胞壁处溶质浓度高于胞内部(或低于,取决于k0)。胞状偏析的尺度为胞尺寸(μm级),通过扩散退火可有效消除。胞状偏析是枝晶偏析的特殊形态(无二次枝晶臂时),与成分过冷引起的界面失稳密切相关。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"枝晶偏析(晶内偏析)\", \"def\": \"单个枝晶内部化学成分的不均匀性--先凝固的枝晶轴部溶质含量低,后凝固的枝晶间区域溶质含量高。枝晶偏析是凝固过程中固相扩散不充分(非平衡凝固)导致的。典型例子:钢锭中Mn、P、S在枝晶间偏聚。枝晶偏析可通过后续扩散退火(均匀化退火--高温长时间加热使溶质在固相中短程扩散)有效消除。枝晶偏析是带状组织的起源。\", \"must\": false}, {\"chapter\": \"第六章 固态相变\", \"term\": \"晶界偏析\", \"def\": \"溶质原子或杂质元素在晶界处的富集(偏聚)。晶界偏析分为平衡偏析和非平衡偏析两种。平衡偏析由晶界处溶质化学位低于晶内驱动--温度越高偏析程度越小。晶界偏析对材料性能影响极大:(1)回火脆性--P、Sb、Sn等杂质在晶界偏聚降低晶界结合力;(2)晶间腐蚀--不锈钢中Cr23C6沿晶界析出使晶界附近贫Cr;(3)硼在晶界的偏聚则可提高高温合金的晶界强度。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"索氏体（S）\", \"def\": \"细片状珠光体，片间距约0.2~0.4μm，过冷度大于形成普通珠光体时的共析转变产物。索氏体比珠光体更细密，强度硬度高于珠光体（约25~35HRC），塑性韧性也较好。索氏体可通过正火（空冷）或铅浴等温淬火获得，常用于高强钢丝、弹簧等。崔忠圻书中将索氏体、屈氏体、珠光体统称为珠光体型组织，三者仅为片间距不同。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"屈氏体（T）\", \"def\": \"极细片状珠光体，片间距<0.2μm，在较大过冷度下的共析转变产物。硬度约35~45HRC，强度高但塑性较索氏体低。屈氏体通常在油冷或较大过冷度等温淬火时获得。在光学显微镜下因极细而呈黑色团状，无法分辨层片结构，需借助电子显微镜分辨。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"回火马氏体\", \"def\": \"淬火马氏体在低温回火（≤200℃）时的分解产物。马氏体中过饱和碳以ε碳化物（Fe₂.₄C）形式析出，马氏体正方度降低但仍保留板条或片状形态。回火马氏体的硬度较淬火态略有降低，但内应力部分消除、韧性提高。高碳钢低温回火后获得回火马氏体组织，用于要求高硬度高耐磨性的工模具。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"回火屈氏体\", \"def\": \"淬火钢在中温回火（300~500℃）时获得的组织——铁素体基体上分布极细粒状渗碳体。ε碳化物已转变为稳定的Fe₃C渗碳体，马氏体正方度完全消失。回火屈氏体具有高的弹性极限和良好的强韧性配合，广泛用于弹簧钢（如65Mn、60Si2Mn）的热处理。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"回火索氏体\", \"def\": \"淬火钢在高温回火（500~650℃）时获得的组织——铁素体基体（已再结晶为等轴晶粒）上均匀分布细小粒状渗碳体。与回火屈氏体相比，渗碳体颗粒已明显球化和长大。回火索氏体具有良好的综合力学性能，是调质处理的目标组织，广泛用于承受交变载荷的结构件（轴类、连杆、齿轮等）。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"过冷奥氏体\", \"def\": \"冷却到A₁温度以下仍未发生转变的奥氏体。过冷奥氏体在热力学上处于亚稳态，具有向稳定组织转变的倾向。其稳定性取决于温度和合金元素含量——C曲线鼻温附近（约550℃）最不稳定。过冷奥氏体在不同温度下发生不同类型转变：高温区→珠光体；中温区→贝氏体；低温区（Ms以下）→马氏体。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"残余奥氏体\", \"def\": \"淬火冷却至室温（或Mf以下）后仍保留在钢中的未转变奥氏体。产生原因：马氏体转变不完全——当温度降至Mf点以下转变停止，但Mf可低于室温。含碳量越高，Ms和Mf越低，残余奥氏体越多。残余奥氏体降低钢的硬度和耐磨性，可使用深冷处理（冷至Mf以下）使其继续转变。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"Ms点与Mf点\", \"def\": \"Ms点：过冷奥氏体开始转变为马氏体的最高温度。Mf点：马氏体转变基本完成的温度。Ms点主要取决于奥氏体的化学成分——含碳量越高Ms点越低（约从500℃降至室温以下）。除Co和Al外，大多数合金元素均降低Ms点。Ms~Mf区间范围决定马氏体转变特征和残余奥氏体量。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"TTT曲线（过冷奥氏体等温转变曲线/C曲线）\", \"def\": \"表示过冷奥氏体在不同温度下等温转变开始和结束时间（及转变量）与温度关系的曲线，因形状似字母C得名。是制定等温热处理工艺（等温淬火、等温退火、分级淬火）的基本依据。C曲线鼻温（约550℃）处过冷奥氏体最不稳定。合金元素（除Co外）使C曲线右移→提高过冷奥氏体稳定性→提高淬透性。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"CCT曲线（连续冷却转变曲线）\", \"def\": \"表示过冷奥氏体在不同冷却速度下连续冷却时的转变产物和转变温度范围的曲线。比TTT曲线更接近实际热处理条件，是制定淬火、正火、退火等连续冷却工艺的直接依据。与TTT曲线相比，CCT曲线向右下方偏移——连续冷却时转变被推迟。CCT曲线上可读出临界冷却速度Vk。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"临界冷却速度（Vk）\", \"def\": \"使过冷奥氏体在连续冷却过程中不发生高温扩散型转变而全部过冷至Ms点以下发生马氏体转变的最小冷却速度。Vk越小→钢的淬透性越好→越容易获得全马氏体组织。合金元素（除Co外）降低Vk值，提高淬透性。Vk是衡量钢淬透性的基本参数。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"淬火临界直径（D₀）\", \"def\": \"钢在某种淬火介质中冷却时，心部恰好能获得50%马氏体的最大圆棒直径。D₀是衡量钢淬透性的实用工程指标——D₀越大，淬透性越好。D₀取决于钢的化学成分和奥氏体晶粒度。崔忠圻详细讨论了淬透性带和淬透性对选材的工程意义。常用顶端淬火试验（Jominy试验）测定淬透性。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"第一类回火脆性（不可逆回火脆性）\", \"def\": \"淬火钢在250~400℃温度区间回火时出现的冲击韧性显著降低现象。具有不可逆性——一旦发生，重新加热至该温度区间以上也无法恢复韧性。产生原因与回火过程中碳化物沿马氏体板条界或片界析出有关。避免方法：避免在该温度区间回火，或采用等温淬火替代淬火+回火。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"第二类回火脆性（可逆回火脆性）\", \"def\": \"淬火钢在450~650℃高温回火后缓慢冷却时出现的冲击韧性降低现象。具有可逆性——重新加热至600℃以上后快冷可消除。产生原因：P、Sb、Sn、As等杂质元素在原奥氏体晶界偏聚，降低晶界结合力。Mo、W可抑制。防止措施：回火后快冷；选用含Mo或W的钢种；提高钢的纯净度。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"完全退火\", \"def\": \"将亚共析钢加热至Ac₃以上30~50℃，保温后随炉缓慢冷却至室温的热处理工艺。目的：细化晶粒、消除内应力和加工硬化、降低硬度以利于切削加工。加热至完全奥氏体化温度后炉冷获得近平衡组织——先共析铁素体+珠光体。仅适用于亚共析钢（过共析钢若加热至Acm以上缓冷会析出网状二次渗碳体）。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"球化退火\", \"def\": \"将过共析钢（或共析钢）加热至Ac₁以上20~30℃保温适当时间后，极慢冷却或在A₁以下20~30℃等温后炉冷的热处理工艺。目的：使层片状渗碳体和网状二次渗碳体球化为粒状渗碳体——降低硬度、改善切削加工性、为淬火做好组织准备。球化后组织为粒状珠光体。是工模具钢预处理的标准工艺。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"去应力退火\", \"def\": \"将工件加热至500~650℃（低于A₁），保温一定时间后缓冷至室温的热处理工艺。目的：消除铸造、锻造、焊接、冷加工和机加工过程中产生的残余内应力，稳定尺寸，防止后续加工或使用中变形开裂。过程中不发生相变，仅通过原子短程扩散消除弹性应变。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"扩散退火（均匀化退火）\", \"def\": \"将铸锭或铸件加热至高温（通常1050~1200℃，远高于Ac₃），长时间保温（数小时至数十小时）后缓冷的热处理工艺。目的：通过高温长时扩散消除或减轻铸锭中的枝晶偏析和宏观偏析，使成分均匀化。温度高、时间长、成本高，且会导致奥氏体晶粒粗化——通常需在均匀化后进行一次完全退火或正火以细化晶粒。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"再结晶退火\", \"def\": \"将冷变形金属加热至再结晶温度以上适当温度保温，使变形组织发生再结晶——形成新的无畸变等轴晶粒——然后缓冷的热处理工艺。目的：消除加工硬化、恢复塑性、便于进一步冷加工。退火温度=再结晶温度Tᵣ+100~200℃。不改变晶格类型，不涉及相变，是冷加工工序间的软化热处理。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"正火\", \"def\": \"将钢加热至Ac₃（亚共析钢）或Acm（过共析钢）以上30~50℃，保温后在静止空气中冷却的热处理工艺。目的：(1)低碳钢——提高硬度改善切削加工性；(2)中碳钢——细化晶粒为淬火做准备；(3)过共析钢——消除网状二次渗碳体。正火冷却速度比退火快，获得的珠光体更细密（索氏体型），硬度更高。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"表面淬火\", \"def\": \"利用快速加热（感应加热、火焰加热等）使工件表层快速奥氏体化后立即淬火冷却，使表层获得马氏体组织而心部保持原始组织的热处理工艺。实现'表硬里韧'的性能组合——表层高硬度高耐磨性+心部高韧性。常用方法：感应加热表面淬火、火焰加热表面淬火。适用于中碳钢（0.40~0.50%C）和球墨铸铁的齿轮、轴类、导轨等零件。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"渗碳\", \"def\": \"将低碳钢工件置于富碳活性介质中，加热到奥氏体区温度（通常920~950℃）保温，使碳原子渗入工件表层的化学热处理工艺。渗碳后表面含碳量提高至0.8%~1.1%C，心部仍保持低碳。渗碳后淬火+低温回火——表面获得高碳回火马氏体（高硬度高耐磨性）+心部为低碳马氏体或铁素体（高韧性）。广泛用于齿轮、凸轮轴等耐磨零件。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"渗氮（氮化）\", \"def\": \"将工件置于含氮活性介质中，加热至500~570℃保温，使氮原子渗入工件表层的化学热处理工艺。表层形成高硬度的合金氮化物层（Fe₂₋₃N、Fe₄N及AlN、CrN等），硬度可达1000HV以上且红硬性好。渗氮温度低（铁素体区），无需后续淬火——工件变形极小。适用于含Al、Cr、Mo等合金元素的渗氮钢（38CrMoAl）。缺点是渗层较薄、周期长。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"碳氮共渗\", \"def\": \"在渗碳气氛中同时加入氨气，使碳和氮同时渗入工件表层的化学热处理工艺。温度（820~880℃）低于渗碳温度，共渗层兼有渗碳层深和渗氮层硬的特点。氮的渗入降低了奥氏体化温度、提高了淬透性。碳氮共渗后直接淬火+低温回火，获得含氮马氏体表层——比单纯渗碳层具有更高的耐磨性和疲劳强度。广泛用于汽车齿轮等大批量零件。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"固溶处理\", \"def\": \"将合金加热至单相固溶体区温度保温，使第二相充分溶入基体形成固溶体，然后快速冷却（淬火）抑制第二相析出而获得过饱和固溶体的热处理工艺。是时效硬化的前提——固溶后获得过饱和固溶体（软态、塑性好），随后时效使第二相弥散析出实现强化。典型应用：铝合金（固溶+时效）、奥氏体不锈钢（固溶处理获得单相奥氏体提高耐腐蚀性）。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"时效（时效硬化）\", \"def\": \"过饱和固溶体在室温或加热到一定温度保温过程中，溶质原子偏聚（GP区形成）→过渡相析出→平衡相析出的过程，伴随硬度和强度显著提高（时效硬化），随后出现过时效（硬度下降）。分为自然时效（室温）和人工时效（加热）。是可热处理强化铝合金（如Al-Cu系2024）和部分高温合金的主要强化手段。峰值时效对应GP区+过渡相共存的最佳强化状态。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"GP区（Guinier-Preston区）\", \"def\": \"过饱和固溶体在时效初期，溶质原子在基体特定晶面上偏聚形成的微小富溶质区（厚度仅几个原子层，直径约几nm）。GP区与基体保持完全共格关系，通过共格应变场阻碍位错运动产生强化。是时效过程的第一阶段——随温度升高或时间延长向过渡相→平衡相演变。GP区强化是Al-Cu合金自然时效的主要机制——Cu原子在{100}α上偏聚形成盘状GP区。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"调质处理\", \"def\": \"淬火+高温回火的双重热处理工艺。淬火获得马氏体组织，高温回火（550~650℃）使马氏体分解、碳化物球化、铁素体再结晶，最终获得回火索氏体。调质处理获得优良的综合力学性能（高强度+高韧性），是承受交变载荷的中碳钢和中碳合金钢结构件最常用的热处理工艺。45钢和40Cr钢为典型调质钢。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"柯肯达尔效应（Kirkendall效应）\", \"def\": \"在扩散偶中，由于两种组元的扩散系数不等，原始界面（惰性标记物所在平面）向扩散快的一侧移动的现象。是扩散由空位机制控制的直接证据——扩散较快组元一侧空位流入多于流出，产生净空位流，空位凝聚形成孔隙（柯肯达尔孔洞）。柯肯达尔效应的重要意义：证明扩散以空位机制为主，否定了直接交换机制。\", \"must\": true}, {\"chapter\": \"崔忠圻补充\", \"term\": \"Cottrell气团（明显屈服现象）\", \"def\": \"间隙溶质原子（C、N）在位错周围形成的偏聚气氛。间隙溶质原子与刃型位错的弹性应力场发生交互作用——溶质原子被吸引至刃型位错下方的膨胀区，形成'气团'钉扎位错。要使位错从气团中脱钉需要额外应力→出现上屈服点；脱钉后在较低应力下运动→下屈服点。Cottrell气团机制解释了低碳钢的明显屈服现象和屈服平台（Lüders带），也是应变时效的微观机制。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"应变时效\", \"def\": \"冷变形后的低碳钢在室温放置或低温加热后，强度（特别是屈服强度）升高、塑性降低的现象。微观机制：冷变形使位错脱钉（消除屈服平台），随后C、N原子扩散至位错处重新形成Cottrell气团→位错再次被钉扎→屈服现象恢复且屈服强度提高。应变时效使深冲钢板冲压后出现表面不平整（拉伸应变痕），是汽车用IF钢（无间隙原子钢）开发的原因。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"同素异构转变\", \"def\": \"同一元素（或化合物）在不同温度或压力下具有不同晶体结构的现象。铁是最典型的例子：α-Fe（BCC，<912℃）→γ-Fe（FCC，912~1394℃）→δ-Fe（BCC，1394~1538℃）。同素异构转变是钢铁热处理的基础——利用铁的同素异构转变通过对加热和冷却的控制来获得不同组织，从而实现性能调控。Fe的同素异构转变属于一级相变——有体积变化（γ→α膨胀约1%）。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"红硬性（高温硬度）\", \"def\": \"材料在高温下保持高硬度的能力。是高速钢和硬质合金最重要的性能指标之一——刀具在高速切削时刀尖温度可达500~600℃，需在此温度下仍保持足够硬度。高速钢（如W18Cr4V）经淬火+多次高温回火（560℃）后，由于合金碳化物（W₂C、VC等）的弥散析出硬化（二次硬化），在600℃左右仍可保持HRC60以上的高硬度。\", \"must\": false}, {\"chapter\": \"崔忠圻补充\", \"term\": \"蠕变\", \"def\": \"材料在恒定应力（低于屈服应力）和恒定温度（通常>0.3Tm）下随时间延长持续发生缓慢塑性变形的现象。典型蠕变曲线分为三个阶段：减速蠕变→恒速蠕变（稳态蠕变速率最小）→加速蠕变（至断裂）。蠕变是高温构件（蒸汽管道、燃气轮机叶片、核反应堆部件）的主要失效方式。提高抗蠕变性能的途径：提高熔点、增加晶界强化元素、引入弥散强化相。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"奥氏体化\", \"def\": \"将钢加热至临界温度（Ac3或Ac1）以上保温，使原始组织全部或部分转变为奥氏体的过程。奥氏体化是几乎所有热处理的第一步，包括形核、长大、剩余渗碳体溶解和均匀化四个阶段。奥氏体的成分、晶粒度直接影响后续冷却转变产物的组织和性能。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"起始晶粒度\", \"def\": \"奥氏体转变刚刚完成时的晶粒大小，即奥氏体化刚刚结束、尚未开始长大时的晶粒度。起始晶粒度取决于形核率与长大速度之比：形核率越大、长大速度越小，起始晶粒越细。原始组织越细（相界面越多），起始晶粒越细。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"本质晶粒度\", \"def\": \"钢在930°C保温3~8小时后测得的奥氏体晶粒大小，反映钢奥氏体晶粒长大的倾向。用Al脱氧的钢（含AlN）及含Ti、V、Nb等元素的钢，弥散的氮化物、碳化物质点钉扎晶界，抑制晶粒长大，为本质细晶粒钢；反之，用Si、Mn脱氧的钢为本质粗晶粒钢。本质晶粒度是钢的固有特性，与实际热处理无关。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"实际晶粒度\", \"def\": \"钢在具体热处理或热加工条件下实际获得的奥氏体晶粒大小。实际晶粒度取决于本质晶粒度和实际加热温度、保温时间。实际晶粒越细，转变后组织越细，钢的强度和韧性越好。检验标准为晶粒度等级（1~8级，8级最细）。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"奥氏体晶粒长大\", \"def\": \"奥氏体化温度过高或保温时间过长时，晶界迁移使小晶粒合并成大晶粒的过程。驱动力为总的界面能下降。晶粒粗化导致淬火后马氏体粗大、韧性下降、淬裂倾向增大。Ti、V、Al等元素形成的弥散质点阻碍晶界迁移，细化晶粒；Mn、P促进晶粒长大。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"连续加热奥氏体化\", \"def\": \"快速加热（感应加热、激光加热）条件下，奥氏体在连续升温过程中形成。特点：转变温度高（过热度大）、速度快、起始晶粒细，但均匀化不足（碳化物溶解不充分），需注意保温时间控制。高频感应加热淬火即利用此原理获得细小奥氏体晶粒。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"不完全退火\", \"def\": \"将钢加热至Ac1~ Ac3（亚共析钢）或Ac1~ A{cm}（过共析钢）之间，保温后缓冷的退火工艺。组织未完全奥氏体化（保留部分先共析相），主要用于过共析钢降低硬度、消除应力。球化退火实质上是不完全退火的一种。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"等温退火\", \"def\": \"将钢加热至奥氏体化温度后，较快冷至A1以下某一温度（珠光体转变区）等温保持，使奥氏体等温转变为珠光体，然后空冷的退火工艺。与普通退火相比，等温退火转变在恒温下进行、组织均匀、周期显著缩短，特别适用于合金钢（C曲线右移，普通退火周期长）。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"正火与退火的组织差异（派生考点）\", \"def\": \"同一钢种正火与退火的组织类型相同（先共析相+珠光体型组织），但正火因冷却快、过冷度大：珠光体片间距更细（索氏体化）、先共析铁素体量略少（共析成分点移动）、晶粒更细。因此正火态强度硬度略高于退火态，塑性韧性略低。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"淬火\", \"def\": \"将钢加热至Ac3或Ac1以上适当温度，保温后以大于临界冷却速度Vk的速度快速冷却，使过冷奥氏体在Ms以下转变为马氏体（或等温转变为下贝氏体）的热处理工艺。淬火是强化钢的最重要手段，与回火配合使用。淬火加热温度：亚共析钢Ac3+30~50°C（完全奥氏体化）；过共析钢Ac1+30~50°C（不完全奥氏体化，保留粒状渗碳体）。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"临界冷却速度（$V_k$）\", \"def\": \"使过冷奥氏体在连续冷却过程中不发生扩散型转变（珠光体、贝氏体转变）而全部过冷至Ms以下转变为马氏体的最小冷却速度。Vk对应CCT曲线上与转变开始线鼻部相切的冷却曲线。Vk越小，钢的淬透性越好。合金元素（除Co外）增大过冷奥氏体稳定性，使C曲线右移，降低Vk。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"淬透性\", \"def\": \"钢在淬火时获得淬硬层（马氏体层）深度的能力，即钢被淬透的难易程度。其本质是过冷奥氏体的稳定性，取决于C曲线的位置：C曲线越右，Vk越小，淬透性越好。影响因素：合金元素（除Co外均提高淬透性）、奥氏体成分均匀性、奥氏体晶粒度（粗晶粒淬透性好）、未溶第二相（降低淬透性）。测量方法：Jominy端淬试验、临界直径D0。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"淬硬性\", \"def\": \"钢淬火后所能达到的最高硬度，即马氏体的硬度。淬硬性主要取决于马氏体的含碳量：含碳量越高，晶格畸变越大，硬度越高。合金元素对淬硬性影响不大。淬透性与淬硬性是两个独立概念：高碳钢淬硬性高但淬透性可能很差（如T12）；低碳合金钢淬硬性低但淬透性可很好。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"临界直径（$D_0$）\", \"def\": \"钢在某种淬火介质中冷却时，心部恰好获得50%马氏体的最大圆柱试样直径。D0是衡量淬透性的实用工程指标——D0越大淬透性越好。同一钢种在不同介质中D0不同（水中大于油中）。理想临界直径D0'指在理想淬火介质（冷却速度无穷大）中的临界直径。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"端淬试验（Jominy试验）\", \"def\": \"标准淬透性试验：将phi25times100mm的标准试样加热奥氏体化后，对末端喷水冷却，然后沿试样纵向测量各点硬度，绘制硬度-距端面距离曲线（淬透性曲线）。距端面越远冷却速度越慢，硬度越低。曲线平缓表示淬透性好，陡降表示淬透性差。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"单液淬火\", \"def\": \"将奥氏体化的工件在一种淬火介质中冷却到底的淬火方法。优点是操作简单；缺点是水淬变形开裂倾向大，油淬硬度不足。适用于形状简单的碳钢（水/盐水中）和合金钢（油中）零件。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"双液淬火\", \"def\": \"将奥氏体化的工件先在冷却能力强的介质（水）中快冷至稍高于Ms（约300~400°C，C曲线鼻部以下），立即转入冷却能力弱的介质（油）中缓冷至室温的淬火方法。既保证避开珠光体转变区，又减小马氏体转变区的组织应力，防止变形开裂。适用于形状复杂的碳钢件。关键：在水中停留的时间要掌握准确。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"分级淬火\", \"def\": \"将奥氏体化的工件淬入温度略高于或略低于Ms点的盐浴（或碱浴）中，保温适当时间（使工件内外温度均匀），然后取出空冷的淬火方法。工件在盐浴中温度均匀后，马氏体转变在空冷（缓慢）条件下进行，组织应力小，变形开裂倾向显著减小。适用于形状复杂、变形要求严格的小型零件（刀具、模具）。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"等温淬火\", \"def\": \"将奥氏体化的工件淬入Ms点以上（贝氏体转变区，通常250~400°C）的盐浴中，等温保持足够时间使奥氏体转变为下贝氏体，然后取出空冷的淬火方法。所得下贝氏体组织强度高、韧性好（强韧兼备），且变形极小、无淬火开裂危险。适用于弹簧、齿轮、丝锥等要求强韧性的中小件。等温时间需大于贝氏体转变孕育期+完成时间。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"淬火内应力（热应力与组织应力）\", \"def\": \"热应力：淬火冷却时工件截面温差引起的不均匀收缩产生的内应力——冷却后期表面受压、心部受拉。组织应力：马氏体转变时表层与心部相变不同时性（表层先转变膨胀）产生的内应力——表层受拉、心部受压。淬火裂纹主要由组织应力引起（发生在Ms以下的快冷阶段）。分级、等温淬火可减小组织应力。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"淬火缺陷：氧化、脱碳与过热、过烧\", \"def\": \"氧化：钢在氧化性气氛中加热时表面形成氧化铁皮，造成金属损耗。脱碳：表层碳被氧化烧损，含碳量降低，淬火后表面硬度不足。防止：盐浴加热、保护气氛、真空加热。过热：加热温度过高使奥氏体晶粒粗大，淬火后马氏体粗大、韧性下降——可通过正火或退火补救。过烧：温度接近固相线，晶界氧化甚至局部熔化——不可补救，只能报废。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"深冷处理（冷处理）\", \"def\": \"将淬火到室温的钢继续冷却到Mf点以下（通常-70~-80°C干冰或-196°C液氮），使残余奥氏体继续转变为马氏体的工艺。高碳钢Mf低于室温，淬火后残余奥氏体多，影响硬度和尺寸稳定性。深冷处理提高硬度、耐磨性并稳定尺寸，用于精密量具、滚动轴承、油泵偶件等。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"回火\", \"def\": \"将淬火钢加热至Ac1以下某一温度，保温适当时间后冷却到室温的热处理工艺。目的：消除或降低淬火残余应力、稳定组织与尺寸、调整力学性能（获得强度与韧性的合理配合）。淬火+回火是不可分割的最终热处理。按温度分为低温（150~250°C）、中温（350~500°C）、高温（500~650°C）回火。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"第一类回火脆性（低温回火脆性）\", \"def\": \"淬火钢在250~400°C温度区间回火时出现的冲击韧性显著下降现象，又称不可逆回火脆性。其特征是：一旦发生，重新加热到更高温度回火也无法消除（不可逆）。产生原因与该温度区间碳化物沿马氏体板条界/片界析出及杂质元素（P、S等）的晶界偏聚有关。防止措施：避开该温度区间回火；改用等温淬火获得下贝氏体。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"第二类回火脆性（高温回火脆性）\", \"def\": \"淬火钢在450~650°C回火后缓慢冷却（或在该温度长时间保温）时出现的冲击韧性下降现象，又称可逆回火脆性。其特征是可逆：已脆化的钢重新加热到600°C以上短时保温后快冷可恢复韧性。产生原因：P、Sb、Sn、As等杂质元素在原奥氏体晶界偏聚，降低晶界结合力。防止措施：回火后快冷（油冷或水冷）；钢中加入Mo（0.3%~0.5%）或W抑制偏聚；提高钢的纯净度。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"回火稳定性（抗回火性）\", \"def\": \"淬火钢在回火过程中抵抗硬度下降（软化）的能力。合金元素溶入马氏体后，通过阻碍碳扩散和碳化物聚集长大，推迟软化进程，使合金钢在相同回火温度下保持更高硬度。Cr、Mo、W、V等强碳化物形成元素提高回火稳定性效果显著。回火稳定性高的钢可在更高温度回火获得相同硬度，因而韧性更好。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"二次硬化\", \"def\": \"含W、Mo、V等强碳化物形成元素的高合金钢（如高速钢），在500~600°C回火时，因析出弥散的W2C、Mo2C、VC等特殊碳化物，以及残余奥氏体转变为马氏体，使硬度不降反升的现象。二次硬化是高速钢获得红硬性（高温下保持高硬度）的基础。高速钢的典型工艺：1270~1280°C淬火+560°C三次回火。\", \"must\": true}, {\"chapter\": \"热处理工艺\", \"term\": \"红硬性（热硬性）\", \"def\": \"材料在高温下长期保持高硬度的能力。刀具高速切削时刀刃温度可达500~600°C，要求材料在该温度下仍保持HRC60以上。红硬性来源于合金碳化物（W2C、VC等）的高温稳定性——即二次硬化效应。高速钢（W18Cr4V）和硬质合金具有优良红硬性，而碳素工具钢完全不具备。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"感应加热表面淬火\", \"def\": \"利用电磁感应原理，交变电流通过感应器在工件表层产生感应电流（涡流），由于集肤效应电流集中于表层，使表层快速加热奥氏体化，随后喷水（或浸油）冷却的表面淬火方法。电流频率越高，集肤效应越强，淬硬层越浅：高频（200~300kHz）0.5~2mm；中频（2.5~10kHz）2~8mm；工频（50Hz）10~20mm。特点是加热速度快、晶粒细、变形小、易实现自动化。广泛用于齿轮、轴类件。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"化学热处理\", \"def\": \"将工件置于含有活性介质的容器中加热保温，使介质分解出的活性原子被工件表面吸附并扩散进入表层，改变表层的化学成分与组织，从而获得所需性能的热处理工艺总称。由分解、吸收、扩散三个基本过程组成。按渗入元素分为渗碳、渗氮、碳氮共渗、渗金属等。特点是表层不仅改变组织还改变成分，强化效果比单纯表面淬火更深入持久。\", \"must\": false}, {\"chapter\": \"热处理工艺\", \"term\": \"复合热处理\", \"def\": \"将两种或多种热处理工艺组合，使工件获得单一工艺难以达到的综合性能。例如：渗碳+高频淬火（表面更高硬度）、渗氮+整体淬火、淬火+深冷+回火（精密件尺寸稳定化）。复合热处理是现代热处理发展的重要方向。\", \"must\": false}]");
+<nav class="tabbar">
+  <button data-tab="home" class="on">
+    <svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H10a2 2 0 0 1 2 2v13a1.7 1.7 0 0 0-1.7-1.6H4z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H14a2 2 0 0 0-2 2v13a1.7 1.7 0 0 1 1.7-1.6H20z"/></svg>
+    卡组
+  </button>
+  <button data-tab="study">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7 9.5h6M7 13h4"/></svg>
+    学习
+  </button>
+  <button data-tab="stats">
+    <svg viewBox="0 0 24 24"><path d="M4 19h16"/><rect x="5" y="11" width="3.4" height="6" rx="1"/><rect x="10.3" y="7" width="3.4" height="10" rx="1"/><rect x="15.6" y="13" width="3.4" height="4" rx="1"/></svg>
+    统计
+  </button>
+  <button data-tab="docs">
+    <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 16h4"/></svg>
+    资料
+  </button>
+  <button data-tab="manage">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M4.2 7.5l1.9 1.1M17.9 15.4l1.9 1.1M4.2 16.5l1.9-1.1M17.9 8.6l1.9-1.1"/></svg>
+    管理
+  </button>
+</nav>
 
-const BASE_CHAPTERS = [...new Set(TERMS_DATA.map(t => t.chapter))];
-const CHAPTERS = [...BASE_CHAPTERS, "必背重点"];
+<div class="mask" id="maskCard">
+  <div class="modal">
+    <div class="grabber"></div>
+    <h3 id="mCardTitle">编辑卡片</h3>
+    <div class="field"><label>正面</label><input id="mFront"></div>
+    <div class="field">
+      <label>背面</label>
+      <textarea id="mBack" style="min-height:150px"></textarea>
+      <div class="hint">支持 <code>$公式$</code>、<code>$$块公式$$</code>、挖空 <code>{{答案}}</code>、<code>**加粗**</code></div>
+    </div>
+    <div class="field"><label>标签（逗号分隔）</label><input id="mTags"></div>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn plain" data-close>取消</button>
+      <button class="btn sm" id="mSave">保存</button>
+    </div>
+  </div>
+</div>
 
-const STORAGE_KEY = "***";
+<div class="mask" id="maskDeck">
+  <div class="modal">
+    <div class="grabber"></div>
+    <h3 id="mDeckTitle">新建卡组</h3>
+    <div class="field"><label>名称</label><input id="dName"></div>
+    <div class="field"><label>说明</label><input id="dDesc"></div>
+    <div class="field"><label>颜色</label><input id="dColor" type="color" value="#007AFF"></div>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn plain" data-close>取消</button>
+      <button class="btn sm" id="dSave">保存</button>
+    </div>
+  </div>
+</div>
 
-let currentFilter = "全部";
-let currentIndex = -1;
-let filteredTerms = [...TERMS_DATA];
-let activeTab = "forgot";
+<div class="toast" id="toast"></div>
 
-function loadState() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-  catch (e) { return {}; }
-}
-function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
-function getForgotMap() { return loadState().forgotMap || {}; }
-function setForgotMap(m) { const s = loadState(); s.forgotMap = m; saveState(s); }
-function getCustomTerms() { return loadState().customTerms || []; }
-function addCustomTerm(t) { const s = loadState(); s.customTerms = s.customTerms || []; s.customTerms.push(t); saveState(s); }
-function getAllTerms() { return [...TERMS_DATA, ...getCustomTerms().map(t => ({...t, custom: true}))]; }
-
-function chipLabel(c) { return c === "必背重点" ? "⭐必背重点" : c; }
-
-function init() {
-  renderFilters();
-  applyFilter();
-  renderTabContent();
-  updateHeaderStats();
-}
-
-function renderFilters() {
-  const bar = document.getElementById("filterBar");
-  bar.innerHTML = ["全部", ...CHAPTERS].map(function(c) {
-    return '<span class="chip' + (c === currentFilter ? ' active' : '') + '" onclick="setFilter(\'' + c + '\')">' + chipLabel(c) + '</span>';
-  }).join("");
-}
-
-function setFilter(ch) {
-  currentFilter = ch;
-  document.querySelectorAll(".chip").forEach(function(el) { el.classList.remove("active"); });
-  event.target.classList.add("active");
-  applyFilter();
-}
-
-function applyFilter() {
-  const all = getAllTerms();
-  if (currentFilter === "全部") {
-    filteredTerms = all;
-  } else if (currentFilter === "必背重点") {
-    filteredTerms = all.filter(function(t) { return t.must; });
-  } else {
-    filteredTerms = all.filter(function(t) { return t.chapter === currentFilter; });
-  }
-  if (filteredTerms.length === 0) filteredTerms = all;
-  currentIndex = -1;
-  nextCard();
-}
-
-function nextCard() {
-  if (filteredTerms.length === 0) {
-    document.getElementById("termDisplay").textContent = "暂无名词";
-    return;
-  }
-  currentIndex = Math.floor(Math.random() * filteredTerms.length);
-  const t = filteredTerms[currentIndex];
-  document.getElementById("chapterTag").textContent = (t.must ? "⭐必背 · " : "") + t.chapter + (t.custom ? " [自订]" : "");
-  document.getElementById("termDisplay").textContent = t.term;
-  document.getElementById("defDisplay").textContent = t.def;
-  document.getElementById("card").classList.remove("flipped");
-  updateProgress();
-}
-
-function flipCard() { document.getElementById("card").classList.toggle("flipped"); }
-
-function markForgot() {
-  if (currentIndex < 0) return;
-  const t = filteredTerms[currentIndex];
-  const key = t.chapter + "::" + t.term;
-  const map = getForgotMap();
-  if (!map[key]) map[key] = { ...t, count: 0, lastTime: Date.now() };
-  map[key].count += 1;
-  map[key].lastTime = Date.now();
-  setForgotMap(map);
-  renderTabContent();
-  updateHeaderStats();
-  nextCard();
-}
-
-function markRemember() {
-  if (currentIndex < 0) return;
-  const t = filteredTerms[currentIndex];
-  const key = t.chapter + "::" + t.term;
-  const map = getForgotMap();
-  if (map[key]) {
-    map[key].count = Math.max(0, (map[key].count || 1) - 1);
-    if (map[key].count <= 0) delete map[key];
-    setForgotMap(map);
-    renderTabContent();
-    updateHeaderStats();
-  }
-  nextCard();
-}
-
-function updateProgress() {
-  const all = getAllTerms();
-  const fm = getForgotMap();
-  const tf = Object.keys(fm).length;
-  const total = all.length;
-  const pct = total > 0 ? Math.round((total - tf) / total * 100) : 0;
-  document.getElementById("progressArea").innerHTML =
-    '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-    '<div class="progress-text">当前题库：' + filteredTerms.length + ' 个 | 待复习：' + tf + ' 个 | 总进度 ' + (total - tf) + '/' + total + '</div>';
-}
-
-function updateHeaderStats() {
-  const fm = getForgotMap();
-  document.getElementById("headerStats").textContent = "📚 " + getAllTerms().length + "个名词 | ⚠️ " + Object.keys(fm).length + "个待复习";
-}
-
-function switchTab(tab) {
-  activeTab = tab;
-  document.getElementById("tabForgot").classList.toggle("active", tab === "forgot");
-  document.getElementById("tabAdd").classList.toggle("active", tab === "add");
-  document.getElementById("tabExport").classList.toggle("active", tab === "export");
-  renderTabContent();
-}
-
-function renderTabContent() {
-  const c = document.getElementById("tabContent");
-  if (activeTab === "forgot") {
-    const fm = getForgotMap();
-    const list = Object.values(fm).sort(function(a, b) { return b.count - a.count; });
-    if (list.length === 0) {
-      c.innerHTML = '<p style="text-align:center;color:#888;padding:20px;">🎉 太棒了！没有需要复习的</p>';
-      return;
-    }
-    let html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
-      '<span style="font-weight:600;">共 ' + list.length + ' 个待复习名词</span>' +
-      '<button onclick="clearForgot()" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:.8rem;">清空全部</button></div>' +
-      '<div class="forgot-list">';
-    list.forEach(function(t, i) {
-      html += '<div class="forgot-item"><span>' + (i + 1) + '. ' + (t.must ? "⭐" : "") + ' <b>' + t.term + '</b> <span style="color:#888;font-size:.75rem;">' + t.chapter + '</span></span><span class="count">×' + t.count + '</span></div>';
-    });
-    html += '</div>';
-    c.innerHTML = html;
-  } else if (activeTab === "add") {
-    let opts = '<option value="">选择章节（可选）</option>';
-    CHAPTERS.forEach(function(ch) { opts += '<option value="' + ch + '">' + chipLabel(ch) + '</option>'; });
-    opts += '<option value="自定义">自定义</option>';
-    c.innerHTML = '<p style="font-size:.85rem;color:#555;margin-bottom:8px;">添加自定义名词解释到题库：</p>' +
-      '<div class="add-form"><select id="addChapter">' + opts + '</select>' +
-      '<input id="addTerm" placeholder="名词名称 *">' +
-      '<textarea id="addDef" placeholder="名词解释内容 *"></textarea>' +
-      '<button onclick="doAddTerm()">添加到题库</button></div>' +
-      '<p style="font-size:.8rem;color:#888;margin-top:8px;">💡 也可导入JSON文件（备份/自定义词条）</p>' +
-      '<input type="file" id="fileInput" accept=".json" onchange="importJSON(this)" style="margin-top:8px;">';
-  } else {
-    const fm = getForgotMap();
-    const list = Object.values(fm).sort(function(a, b) { return b.count - a.count; });
-    window._exportData = {
-      forgotList: list.map(function(t) { return { term: t.term, chapter: t.chapter, def: t.def, count: t.count }; }),
-      customTerms: getCustomTerms(),
-      exportTime: new Date().toISOString()
-    };
-    c.innerHTML = '<p style="font-size:.85rem;color:#555;margin-bottom:8px;">导出你的学习数据：</p>' +
-      '<button class="btn btn-next" onclick="downloadJSON()" style="width:100%;justify-content:center;">📥 下载JSON备份</button>' +
-      '<p style="font-size:.78rem;color:#888;margin-top:8px;">包含没记住的 ' + list.length + ' 个名词及自定义添加内容</p>';
-  }
-}
-
-function doAddTerm() {
-  const chapter = document.getElementById("addChapter").value || "自定义";
-  const term = document.getElementById("addTerm").value.trim();
-  const def = document.getElementById("addDef").value.trim();
-  if (!term || !def) { alert("请填写名词和解释"); return; }
-  addCustomTerm({ chapter: chapter, term: term, def: def });
-  document.getElementById("addTerm").value = "";
-  document.getElementById("addDef").value = "";
-  alert("✅ 已添加！");
-  applyFilter();
-  renderTabContent();
-}
-
-function clearForgot() {
-  if (confirm("确定清空所有没记住记录？")) {
-    setForgotMap({});
-    renderTabContent();
-    updateHeaderStats();
-    updateProgress();
-  }
-}
-
-function downloadJSON() {
-  const b = new Blob([JSON.stringify(window._exportData, null, 2)], { type: "application/json" });
-  const u = URL.createObjectURL(b);
-  const a = document.createElement("a");
-  a.href = u;
-  a.download = "880名词解释_学习记录.json";
-  a.click();
-  URL.revokeObjectURL(u);
-}
-
-function importJSON(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      let n = 0;
-      if (Array.isArray(data)) {
-        data.forEach(function(t) {
-          if (t.term && t.def) {
-            addCustomTerm({ chapter: t.chapter || "自定义", term: t.term, def: t.def });
-            n++;
-          }
-        });
-      } else if (data.customTerms) {
-        data.customTerms.forEach(function(t) { addCustomTerm(t); n++; });
-        if (data.forgotList && data.forgotList.length) {
-          const map = getForgotMap();
-          data.forgotList.forEach(function(t) {
-            const k = (t.chapter || "自定义") + "::" + t.term;
-            map[k] = { ...t, count: t.count || 1, lastTime: Date.now() };
-          });
-          setForgotMap(map);
-        }
-      }
-      alert("✅ 导入成功！" + n + " 个名词已添加。");
-      applyFilter();
-      renderTabContent();
-      updateHeaderStats();
-      updateProgress();
-    } catch (err) {
-      alert("❌ JSON格式错误：" + err.message);
-    }
-  };
-  reader.readAsText(file);
-}
-
-document.addEventListener("dragover", function(e) { e.preventDefault(); });
-document.addEventListener("drop", function(e) {
-  e.preventDefault();
-  const f = e.dataTransfer.files[0];
-  if (f && f.name.endsWith(".json")) {
-    const inp = document.getElementById("fileInput");
-    if (inp) {
-      const dt = new DataTransfer();
-      dt.items.add(f);
-      inp.files = dt.files;
-      importJSON(inp);
-    }
-  }
-});
-
-document.addEventListener("keydown", function(e) {
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
-  if (e.key === " " || e.key === "Enter") { e.preventDefault(); flipCard(); }
-  if (e.key === "ArrowRight") { e.preventDefault(); nextCard(); }
-  if (e.key === "1" || e.key === "f") { e.preventDefault(); markForgot(); }
-  if (e.key === "2" || e.key === "r") { e.preventDefault(); markRemember(); }
-});
-
-init();
-
-</script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}</script></body>
+<script src="data/seed.js"></script>
+<script src="vendor/katex/katex.min.js"></script>
+<script src="vendor/katex/auto-render.min.js"></script>
+<script src="app.js"></script>
+</body>
 </html>
